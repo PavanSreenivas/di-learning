@@ -1,12 +1,14 @@
 import json
 import boto3
 import csv
+import pandas as pd
 
 def lambda_handler(event, context):
     s3_event = event['Records'][0]['s3']
     bucket = s3_event['bucket']['name']
     object_key = s3_event['object']['key']
     
+
     # Check if the uploaded/modified object is a CSV file
     if object_key.endswith('.csv'):
         # Initialize an S3 client
@@ -14,10 +16,11 @@ def lambda_handler(event, context):
         
         # Get the CSV file content from S3
         response = s3_client.get_object(Bucket=bucket, Key=object_key)
+        csvfile = pd.read_csv(response)
         csv_content = response['Body'].read().decode('utf-8')
         
         # Parse CSV content
-        csv_rows = csv_content.split('\n')
+        csv_rows = csvfile.split('\n')
         
         # Print the first 5 rows
         print(f"First 5 rows from CSV file s3://{bucket}/{object_key}:")
