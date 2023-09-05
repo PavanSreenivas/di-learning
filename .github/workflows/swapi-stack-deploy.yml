@@ -10,16 +10,17 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    permissions:
+          id-token: write
+          contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Configure AWS CLI
+      - name: Configure AWS 
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AKIA4YCLV5BQVNLMNQN2 }}
-          aws-secret-access-key: ${{ secrets.sg/LzTZXmCWuBP4+i7ERNMXaRwkXlJkLIqfnqxNN }}
+          role-to-assume: arn:aws:iam::876332050529:role/swapicloudstack
           aws-region: us-east-1 
 
       - name: Update CloudFormation Stack
