@@ -4,7 +4,7 @@ Resources:
   MyS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: swapibucket
+      BucketName: swapibucket1
   MySQSQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
@@ -14,7 +14,7 @@ Resources:
     Properties:
       FunctionName: SWAPIFunction
       Runtime: python3.9
-      Timeout: 210
+      Timeout: 230
       Handler: lambda_function.lambda_handler
       Role:
         Fn::GetAtt:
