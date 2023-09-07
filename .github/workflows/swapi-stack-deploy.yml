@@ -20,7 +20,7 @@ jobs:
       - name: Configure AWS 
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::876332050529:role/swapicloudstack
+          role-to-assume: arn:aws:iam::876332050529:role/swapi-github-actions
           aws-region: us-east-1 
 
       - name: Update CloudFormation Stack
