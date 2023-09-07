@@ -33,7 +33,7 @@ jobs:
             sparse-checkout-cone-mode: false
 
         - name: Zip Archive
-          run: zip -r lambda_function.zip src/lambda_function.py
+          run: zip -r lambda_function.zip lambda_function.py
   
         - name: Upload to S3
           run: |
