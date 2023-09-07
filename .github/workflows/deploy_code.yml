@@ -20,7 +20,7 @@ jobs:
       - name: Zip File
         run:
           zip -r lambda_function.zip src/lambda_function.py
-        working-directory: ${{src/*}}
+        working-directory: ${{src}}
         
       - name: Configure AWS 
         uses: aws-actions/configure-aws-credentials@v1
