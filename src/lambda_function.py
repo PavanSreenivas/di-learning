@@ -7,10 +7,10 @@ import boto3
 s3 = boto3.client("s3")
 sqs = boto3.client("sqs")
 
-#s3 bucket name
+#S3 Bucket Name
 bucket_name = 'swapibucket1'
 
-#queue name
+#SQS Queue Name
 queue_name = 'swapiqueue'    
 queue_url = f"https://sqs.us-east-1.amazonaws.com/876332050529/{queue_name}"
 

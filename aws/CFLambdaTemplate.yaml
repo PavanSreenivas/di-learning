@@ -3,7 +3,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template for Lambda, SQS, and S3
 Resources:
   MyS3Bucket:
-    Type: 'AWS::S3::Bucket'
+    Type: 'AWS::S3::Bucket' #S3 Bucket ARN
     Properties:
       BucketName: swapibucket1
   MySQSQueue:
