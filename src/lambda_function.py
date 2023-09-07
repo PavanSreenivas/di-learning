@@ -54,5 +54,5 @@ def lambda_handler(event,context):
         
     return {
         "statusCode": 200,
-        "body": "JSON Files Uploaded to S3 Bucket with SQS Queue Message"
+        "body": "JSON Files Uploaded to S3 Bucket with SQS Message"
     }
