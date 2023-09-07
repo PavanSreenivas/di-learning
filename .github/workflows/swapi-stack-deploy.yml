@@ -30,3 +30,4 @@ jobs:
         with:
           name: SWAPI-Stack
           template: AWS/CFLambdaTemplate.yaml
+          capabilities: CAPABILITY_NAMED_IAM
