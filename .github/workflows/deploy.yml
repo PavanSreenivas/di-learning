@@ -32,11 +32,11 @@ jobs:
               src
 
         - name: Zip Archive
-          run: zip -r -j lambda_function.zip src/lambda_function-${{ github.sha }}.py
+          run: zip -r -j lambda_function.zip src/lambda_function.py
   
         - name: Upload to S3
           run: |
-            aws s3 cp lambda_function.zip s3://travel1s3bucket/
+            aws s3 cp lambda_function.zip s3://travel1s3bucket/lambda_function--${{ github.sha }}.zip
             
   deploy_infra:
       runs-on: ubuntu-latest
