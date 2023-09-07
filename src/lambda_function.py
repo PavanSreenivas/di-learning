@@ -9,6 +9,7 @@ sqs = boto3.client("sqs")
 
 bucket_name = 'swapibucket1'
 
+#queue name
 queue_name = 'swapiqueue'    
 queue_url = f"https://sqs.us-east-1.amazonaws.com/876332050529/{queue_name}"
 
