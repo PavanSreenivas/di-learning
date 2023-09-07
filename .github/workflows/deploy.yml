@@ -29,10 +29,10 @@ jobs:
           uses: actions/checkout@v4
           with:
             sparse-checkout: |
-              src/lambda_function.py
+              src
 
         - name: Zip Archive
-          run: zip -r lambda_function.zip lambda_function.py
+          run: zip -r -j lambda_function.zip src/lambda_function.py
   
         - name: Upload to S3
           run: |
