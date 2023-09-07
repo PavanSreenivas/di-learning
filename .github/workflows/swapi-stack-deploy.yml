@@ -23,7 +23,10 @@ jobs:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
           aws-region: us-east-1 
-          
-      - name: Update CloudFormation Stack
-        run: |
-          aws cloudformation update-stack --stack-name SWAPI-Stack --template-body file://AWS/CFLambdaTemplate.yaml
+                
+                
+      - name: Deploy to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: SWAPI-Stack
+          template: CFLambdaTemplate.yaml
