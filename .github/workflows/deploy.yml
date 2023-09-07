@@ -36,7 +36,7 @@ jobs:
   
         - name: Upload to S3
           run: |
-            aws s3 cp lambda_function.zip s3://travel1s3bucket/lambda_function--${{ github.sha }}.zip
+            aws s3 cp lambda_function.zip s3://travel1s3bucket/
             
   deploy_infra:
       runs-on: ubuntu-latest
@@ -65,4 +65,5 @@ jobs:
             template: aws/CFLambdaTemplate.yaml
             capabilities: CAPABILITY_NAMED_IAM
             fail-on-empty-changeset: false
+            no-fail-on-empty-changeset: true
           
