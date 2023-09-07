@@ -55,8 +55,8 @@ jobs:
             aws-region: us-east-1 
             
         - name: Deploy to AWS CloudFormation
-          uses: aws-actions/aws-cloudformation-github-deploy@v1
-          with:
-            name: SWAPI-Stack
-            template: aws/CFLambdaTemplate.yaml
-            capabilities: CAPABILITY_NAMED_IAM
+          run : |
+            aws cloudformation update-stack \
+            --stack-name SWAPI-Stack \
+            --template-body aws/CFLambdaTemplate.yaml \
+            --capabilities CAPABILITY_NAMED_IAM
