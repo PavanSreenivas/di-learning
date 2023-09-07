@@ -11,6 +11,8 @@ jobs:
     permissions:
           id-token: write
           contents: read
+    env:
+      working-directory : ./src
           
     steps:
       - name: Checkout Repository
@@ -26,7 +28,7 @@ jobs:
       - name: Zip File
         run:
           zip -r lambda_function.zip . -i src/lambda_function.py
-        working-directory: ${{./src}}
+        working-directory: ${{env.working-directory}}
 
       - name: Upload to S3
         run: |
