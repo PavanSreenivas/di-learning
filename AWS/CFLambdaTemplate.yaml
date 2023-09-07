@@ -14,7 +14,7 @@ Resources:
     Properties:
       FunctionName: SWAPIFunction
       Runtime: python3.9
-      Timeout: 240
+      Timeout: 250
       Handler: lambda_function.lambda_handler
       Role:
         Fn::GetAtt:
