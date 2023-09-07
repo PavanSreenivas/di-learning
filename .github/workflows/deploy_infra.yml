@@ -41,7 +41,7 @@ jobs:
             id-token: write
             contents: read
       env:
-        working-directory : ./src
+        working-directory : ./aws
             
       steps:
         - name: Checkout Repository
