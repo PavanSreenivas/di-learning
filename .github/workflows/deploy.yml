@@ -25,11 +25,15 @@ jobs:
             aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
             aws-region: us-east-1 
                   
-        - name: Zip File
-          run:
-            zip -r ${lambda_function.zip} . -i ${src/lambda_function.py}
-          working-directory: ${{env.working-directory}}
-          
+        - name: Lambda File
+          uses: actions/checkout@v4
+          with:
+            sparse-checkout: |
+              src/lambda_function.py
+            sparse-checkout-cone-mode: false
+
+        - name: Zip Archive
+          run: zip -r lambda_function.zip src/lambda_function.py
   
         - name: Upload to S3
           run: |
