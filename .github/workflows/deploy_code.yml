@@ -5,7 +5,7 @@ on:
     branches:
       - main 
     paths:
-      - 'src/*'
+      - 'src/lambda_function.py'
 
 jobs:
   deploy:
