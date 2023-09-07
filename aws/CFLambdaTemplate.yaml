@@ -1,21 +1,29 @@
-#SWAPI-Stack Template
 AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template for Lambda, SQS, and S3
+
+Parameters:
+  S3KeyName:
+    Description: Name of the S3 key for Lambda code
+    Type: String
+    Default: lambda_function.zip
+
 Resources:
   MyS3Bucket:
-    Type: 'AWS::S3::Bucket' #S3 Bucket ARN
+    Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: swapibucket1
+
   MySQSQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
       QueueName: swapiqueue
+
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName: SWAPIFunction
       Runtime: python3.9
-      Timeout: 260
+      Timeout: 230
       Handler: lambda_function.lambda_handler
       Role:
         Fn::GetAtt:
@@ -23,13 +31,14 @@ Resources:
           - Arn
       Code:
         S3Bucket: travel1s3bucket
-        S3Key: lambda_function.zip
+        S3Key: !Ref S3KeyName
       Environment:
         Variables:
           SQS_QUEUE_URL:
             Fn::GetAtt:
               - MySQSQueue
               - QueueUrl
+
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -46,45 +55,61 @@ Resources:
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: 'arn:aws:logs:*:*:*'
-              - Effect: Allow
-                Action:
-                  - sqs:SendMessage
-                  - sqs:ReceiveMessage
-                  - sqs:GetQueueAttributes
-                  - sqs:DeleteMessage
-                Resource:
-                  Fn::GetAtt:
-                    - MySQSQueue
-                    - Arn
-              - Effect: Allow
-                Action:
-                  - s3:PutObject
-                  - s3:PutObjectAcl
-                Resource:
-                  Fn::Join:
-                    - ''
-                    - - Fn::GetAtt:
-                          - MyS3Bucket
-                          - Arn
-                      - '/*'
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: 'arn:aws:logs:*:*:*'
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage
+                - sqs:ReceiveMessage
+                - sqs:GetQueueAttributes
+                - sqs:DeleteMessage
+              Resource:
+                Fn::GetAtt:
+                  - MySQSQueue
+                  - Arn
+            - Effect: Allow
+              Action: 
+                - cloudformation:CreateStack
+                - cloudformation:DeleteStack
+                - cloudformation:UpdateStack
+                - cloudformation:DescribeStacks
+                - cloudformation:CreateChangeSet
+                - cloudformation:DescribeChangeSet
+                - cloudformation:DeleteChangeSet
+                - cloudformation:ExecuteChangeSet
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - s3:GetObject  # Added permission to get the S3 object
+                - s3:PutObject
+                - s3:PutObjectAcl
+              Resource:
+                Fn::Sub:
+                  - arn:aws:s3:::${BucketName}/*
+                  - BucketName: !Ref MyS3Bucket
+
 Outputs:
   LambdaFunctionName:
     Description: Name of the created Lambda function
     Value:
       Ref: MyLambdaFunction
+
   SQSQueueURL:
     Description: URL of the created SQS queue
     Value:
       Fn::GetAtt:
         - MySQSQueue
         - QueueUrl
+
   S3BucketName:
     Description: Name of the created S3 bucket
     Value:
       Ref: MyS3Bucket
+
+  S3ObjectKey:
+    Description: Key of the uploaded S3 object
+    Value: !Ref S3KeyName
