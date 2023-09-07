@@ -19,7 +19,7 @@ film_url = "https://swapi.dev/api/films/"
 
 def lambda_handler(event,context):
     
-    # Data from SWAPI
+    # Fetch Data from SWAPI
     response = urllib.request.urlopen(film_url)
     response_data = response.read()
     response_json = json.loads(response_data)
