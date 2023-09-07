@@ -1,4 +1,4 @@
-name: SWAPI-Stack Deploy
+name: S3 Code Deploy
 
 on:
   push:
