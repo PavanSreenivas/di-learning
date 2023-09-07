@@ -45,11 +45,11 @@ def lambda_handler(event,context):
         
         print(json.dumps(film_actor, indent=4)) 
         
-        #Data as Message to SQS
+        #DATA as Message to SQS
         message_body = json.dumps(film_actor)
         sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(message_body))
         
-        #Upload files to S3
+        #Upload files to S3 Bucket
         s3.put_object(Bucket = bucket_name, Key = folder+film_filename, Body = message_body )
         
     return {
