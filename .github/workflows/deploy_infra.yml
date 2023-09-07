@@ -4,15 +4,14 @@ on:
   push:
     branches:
       - main 
-    paths:
-      - 'AWS/CFLambdaTemplate.yaml'
-
+      
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
           id-token: write
           contents: read
+          
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2.3.5
@@ -24,10 +23,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
           aws-region: us-east-1 
                 
-                
+      - name: Zip File
+        run:
+          zip -r lambda_function.zip . -i src/lambda_function.py
+        working-directory: ${{./src}}
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp src/lambda_function.zip s3://travel1s3bucket/
+        
       - name: Deploy to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: SWAPI-Stack
-          template: AWS/CFLambdaTemplate.yaml
+          template: aws/CFLambdaTemplate.yaml
           capabilities: CAPABILITY_NAMED_IAM
