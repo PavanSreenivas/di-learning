@@ -7,6 +7,7 @@ import boto3
 s3 = boto3.client("s3")
 sqs = boto3.client("sqs")
 
+#s3 bucket name
 bucket_name = 'swapibucket1'
 
 #queue name
