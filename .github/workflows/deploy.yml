@@ -64,6 +64,4 @@ jobs:
             name: SWAPI-Stack
             template: aws/CFLambdaTemplate.yaml
             capabilities: CAPABILITY_NAMED_IAM
-            fail-on-empty-changeset: false
-            no-fail-on-empty-changeset: true
           
