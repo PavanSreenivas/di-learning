@@ -14,7 +14,7 @@ bucket_name = 'swapibucket1'
 queue_name = 'swapiqueue'    
 queue_url = f"https://sqs.us-east-1.amazonaws.com/876332050529/{queue_name}"
 
-#SWAPI Film Data URL
+#SWAPI Complete Film Data URL
 film_url = "https://swapi.dev/api/films/"
 
 def lambda_handler(event,context):
