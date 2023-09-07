@@ -3,7 +3,7 @@ import json
 import urllib.request
 import boto3
 
-
+#boto3 clients
 s3 = boto3.client("s3")
 sqs = boto3.client("sqs")
 
