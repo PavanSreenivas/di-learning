@@ -105,7 +105,7 @@ Resources:
         Fn::GetAtt:
           - MyApiGateway
           - RootResourceId      
-      PathPart: 'SWAPI'
+      PathPart: '/films'
   
   MyApiMethod:
     Type: 'AWS::ApiGateway::Method'
@@ -121,8 +121,7 @@ Resources:
       Integration:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
-        Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations
+        Uri: arn:aws:execute-api:us-east-1:876332050529:6ndpn14etd/*/POST/films
 
 Outputs:
   LambdaFunctionName:
