@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: CloudFormation template for Lambda, SQS, and S3
+Description: CloudFormation Template for SWAPI Stack
 
 Parameters:
   S3KeyName:
-    Description: Name of the S3 key for Lambda code
+    Description: SWAPI Stack LambdaFunction Code
     Type: String
     Default: lambda_function.zip
 
@@ -138,27 +138,27 @@ Resources:
 
 Outputs:
   LambdaFunctionName:
-    Description: Name of the created Lambda function
+    Description: SWAPIFunction Lambda Code
     Value:
       Ref: MyLambdaFunction
 
   SQSQueueURL:
-    Description: URL of the created SQS queue
+    Description: SWAPI SQS Queue
     Value:
       Fn::GetAtt:
         - MySQSQueue
         - QueueUrl
 
   S3BucketName:
-    Description: Name of the created S3 bucket
+    Description: SWAPI S3 Bucket
     Value:
       Ref: MyS3Bucket
 
   S3ObjectKey:
-    Description: Key of the uploaded S3 object
+    Description: LambdaFunctionCode Object Key
     Value: !Ref S3KeyName
  
   ApiGatewayEndpoint:
-    Description: Endpoint URL of the API Gateway
+    Description: API Gateway Endpoint
     Value:
       Fn::Sub: "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
