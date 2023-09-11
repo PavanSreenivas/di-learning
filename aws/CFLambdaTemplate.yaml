@@ -18,6 +18,11 @@ Resources:
     Properties:
       QueueName: swapiqueue
 
+  MyApiGateway:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: StackAPI
+
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
@@ -91,10 +96,6 @@ Resources:
                 Fn::Sub:
                   - arn:aws:s3:::${BucketName}/*
                   - BucketName: !Ref MyS3Bucket
-  MyApiGateway:
-    Type: 'AWS::ApiGateway::RestApi'
-    Properties:
-      Name: StackAPI
   
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
