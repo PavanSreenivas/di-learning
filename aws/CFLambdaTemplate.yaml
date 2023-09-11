@@ -108,7 +108,7 @@ Resources:
       ParentId: !GetAtt 
         - StackAPI
         - RootResourceId
-      PathPart: "/*"
+      PathPart: films
   
   StackAPIMethod:
     Type: 'AWS::ApiGateway::Method'
@@ -134,7 +134,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt SWAPIFunction.Arn
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/*"
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/films"
 
 Outputs:
   LambdaFunctionName:
