@@ -100,9 +100,8 @@ Resources:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
       ParentId:
-        Fn::GetAtt:
-          - MyApiGateway
-          - RootResourceId     
+        Ref: MyApiGateway
+        Ref: RootResourceId     
       RestApiId:
         Ref: MyApiGateway
       PathPart: 'films'
