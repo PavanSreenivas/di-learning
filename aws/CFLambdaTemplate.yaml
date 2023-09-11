@@ -135,7 +135,20 @@ Resources:
       FunctionName: !GetAtt SWAPIFunction.Arn
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/films"
-
+   
+  StackAPIStage:
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      StageName: StackAPIStage
+      RestApiId: !Ref StackAPI
+      DeploymentId: !Ref StackAPIDeploy 
+    
+  StackAPIDeploy:
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref StackAPI
+      StageName: StackAPIStage
+      
 Outputs:
   LambdaFunctionName:
     Description: SWAPIStack Function Code Name
