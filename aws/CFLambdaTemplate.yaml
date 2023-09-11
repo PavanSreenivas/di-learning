@@ -60,64 +60,71 @@ Resources:
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: 'arn:aws:logs:*:*:*'
-              - Effect: Allow
-                Action:
-                  - sqs:SendMessage
-                  - sqs:ReceiveMessage
-                  - sqs:GetQueueAttributes
-                  - sqs:DeleteMessage
-                Resource:
-                  Fn::GetAtt:
-                    - SWAPIQueue
-                    - Arn
-              - Effect: Allow
-                Action:
-                  - cloudformation:CreateStack
-                  - cloudformation:DeleteStack
-                  - cloudformation:UpdateStack
-                  - cloudformation:DescribeStacks
-                  - cloudformation:CreateChangeSet
-                  - cloudformation:DescribeChangeSet
-                  - cloudformation:DeleteChangeSet
-                  - cloudformation:ExecuteChangeSet
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  - s3:GetObject  
-                  - s3:PutObject
-                  - s3:PutObjectAcl
-                Resource:
-                  - Fn::Sub:
-                      - arn:aws:s3:::${BucketName}/*
-                      - BucketName: !Ref SWAPIBucket
-              - Effect: Allow
-                Action:
-                  - lambda:InvokeFunction
-                Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPIFunction"
-
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: 'arn:aws:logs:*:*:*'
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage
+                - sqs:ReceiveMessage
+                - sqs:GetQueueAttributes
+                - sqs:DeleteMessage
+              Resource:
+                Fn::GetAtt:
+                  - SWAPIQueue
+                  - Arn
+            - Effect: Allow
+              Action: 
+                - cloudformation:CreateStack
+                - cloudformation:DeleteStack
+                - cloudformation:UpdateStack
+                - cloudformation:DescribeStacks
+                - cloudformation:CreateChangeSet
+                - cloudformation:DescribeChangeSet
+                - cloudformation:DeleteChangeSet
+                - cloudformation:ExecuteChangeSet
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - s3:GetObject  
+                - s3:PutObject
+                - s3:PutObjectAcl
+              Resource:
+                Fn::Sub:
+                  - arn:aws:s3:::${BucketName}/*
+                  - BucketName: !Ref SWAPIBucket
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
+  
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
       RestApiId: !Ref StackAPI
-      ParentId: !GetAtt StackAPI.RootResourceId
+      ParentId: !GetAtt 
+        - StackAPI
+        - RootResourceId
       PathPart: films
-
+  
   StackAPIMethod:
     Type: 'AWS::ApiGateway::Method'
     Properties:
+      ApiKeyRequired: False
       AuthorizationType: NONE
       HttpMethod: POST
-      ResourceId: !GetAtt StackAPIResource.Id
-      RestApiId: !Ref StackAPI
+      ResourceId:
+        Fn::GetAtt:
+          - StackAPIResource
+          - ResourceId
+      RestApiId:
+        Ref: StackAPI
       Integration:
-        Type: AWS_PROXY
         IntegrationHttpMethod: POST
+        Type: AWS_PROXY
         Uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SWAPIFunction.Arn}/invocations"
 
@@ -142,15 +149,15 @@ Outputs:
         - SWAPIQueue
         - QueueUrl
 
-  SWAPIBucket:
+  SWAPIBuket:
     Description: SWAPI S3 Bucket
     Value:
       Ref: SWAPIBucket
 
   SWAPIFunctionCode:
     Description: LambdaFunctionCode Key
-    Value: !Ref SWAPIFunctionCode
-
+    Value: !Ref SWAPIBucket
+ 
   StackAPI:
     Description: API Gateway Endpoint
     Value:
