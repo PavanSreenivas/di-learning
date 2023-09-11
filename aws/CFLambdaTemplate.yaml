@@ -104,8 +104,7 @@ Resources:
           - MyApiGateway
           - Id      
       RestApiId:
-        Fn::GetAtt:
-          - MyApiGateway
+        Ref: MyApiGateway
       PathPart: 'films'
   
   MyApiMethod:
@@ -145,3 +144,7 @@ Outputs:
   S3ObjectKey:
     Description: Key of the uploaded S3 object
     Value: !Ref S3KeyName
+ 
+  ApiGatewayEndpoint:
+    Description: Endpoint URL of the API Gateway
+    Value: "https://6ndpn14etd.execute-api.us-east-1.amazonaws.com/film_data/films"
