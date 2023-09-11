@@ -91,6 +91,7 @@ Resources:
                 Fn::Sub:
                   - arn:aws:s3:::${BucketName}/*
                   - BucketName: !Ref MyS3Bucket
+
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
@@ -99,12 +100,8 @@ Resources:
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      ParentId:
-        Fn::GetAtt:
-          - MyApiGateway
-          - RootResourceId    
-      RestApiId:
-        Ref: MyApiGateway
+      ParentId: zy42vdhrdh
+      RestApiId: x74zl4
       PathPart: 'films'
   
   MyApiMethod:
