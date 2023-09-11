@@ -103,7 +103,9 @@ Resources:
         Fn::GetAtt:
           - MyApiGateway
           - Id      
-      RestApiId: 6ndpn14etd
+      RestApiId:
+        Fn::GetAtt:
+          - MyApiGateway
       PathPart: 'films'
   
   MyApiMethod:
