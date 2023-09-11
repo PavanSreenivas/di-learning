@@ -102,7 +102,7 @@ Resources:
       ParentId:
         Fn::GetAtt:
           - MyApiGateway
-          - Id      
+          - RootResourceId    
       RestApiId:
         Ref: MyApiGateway
       PathPart: 'films'
