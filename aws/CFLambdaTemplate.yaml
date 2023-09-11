@@ -134,6 +134,9 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt SWAPIFunction.Arn
       Principal: apigateway.amazonaws.com
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/*"
 
 Outputs:
