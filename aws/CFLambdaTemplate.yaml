@@ -99,13 +99,13 @@ Resources:
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
+      RestApiId:
+        Ref: MyApiGateway
       ParentId:
         Fn::GetAtt:
           - MyApiGateway
-          - RootResourceId
-      RestApiId:
-        Ref: MyApiGateway
-      PathPart: 'swapi'
+          - RootResourceId      
+      PathPart: 'SWAPI'
   
   MyApiMethod:
     Type: 'AWS::ApiGateway::Method'
