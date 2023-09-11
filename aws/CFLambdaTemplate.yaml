@@ -11,17 +11,17 @@ Resources:
   SWAPIBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: swapibucket1
+      BucketName: swapistackbucket
 
   SWAPIQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
-      QueueName: swapiqueue
+      QueueName: swapistackqueue
 
   StackAPI:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: SWAPI
+      Name: StackAPI
 
   SWAPIFunction:
     Type: 'AWS::Lambda::Function'
