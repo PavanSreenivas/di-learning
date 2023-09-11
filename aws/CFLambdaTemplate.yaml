@@ -126,7 +126,7 @@ Resources:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
         Uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SWAPIFunction.Arn}/invocations"
+          Fn::Sub: "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/*"
 
   SWAPIStackAPIPermission:
     Type: 'AWS::Lambda::Permission'
