@@ -101,7 +101,7 @@ Resources:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
       ParentId: zy42vdhrdh
-      RestApiId: x74zl4
+      RestApiId: 6ndpn14etd
       PathPart: 'films'
   
   MyApiMethod:
