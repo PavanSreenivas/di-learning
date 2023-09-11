@@ -121,8 +121,9 @@ Resources:
       Integration:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
-        Uri: 
+        Uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations
+
 Outputs:
   LambdaFunctionName:
     Description: Name of the created Lambda function
@@ -147,4 +148,5 @@ Outputs:
  
   ApiGatewayEndpoint:
     Description: Endpoint URL of the API Gateway
-    Fn::Sub: "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
+    Value:
+      Fn::Sub: "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
