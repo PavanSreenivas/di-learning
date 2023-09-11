@@ -91,18 +91,21 @@ Resources:
                 Fn::Sub:
                   - arn:aws:s3:::${BucketName}/*
                   - BucketName: !Ref MyS3Bucket
-
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: SWAPI
+      Name: StackAPI
   
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      ParentId: zy42vdhrdh
-      RestApiId: 6ndpn14etd
-      PathPart: 'movies'
+      ParentId:
+        Fn::GetAtt:
+          - MyApiGateway
+          - RootResourceId     
+      RestApiId:
+        Ref: MyApiGateway
+      PathPart: 'films'
   
   MyApiMethod:
     Type: 'AWS::ApiGateway::Method'
@@ -118,8 +121,8 @@ Resources:
       Integration:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
-        Uri: arn:aws:execute-api:us-east-1:876332050529:6ndpn14etd/*/POST/movies
-
+        Uri: 
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations
 Outputs:
   LambdaFunctionName:
     Description: Name of the created Lambda function
@@ -144,4 +147,4 @@ Outputs:
  
   ApiGatewayEndpoint:
     Description: Endpoint URL of the API Gateway
-    Value: "https://6ndpn14etd.execute-api.us-east-1.amazonaws.com/film_data/films"
+    Fn::Sub: "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
