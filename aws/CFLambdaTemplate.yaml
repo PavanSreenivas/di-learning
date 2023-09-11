@@ -91,6 +91,38 @@ Resources:
                 Fn::Sub:
                   - arn:aws:s3:::${BucketName}/*
                   - BucketName: !Ref MyS3Bucket
+  MyApiGateway:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: SWAPI
+  
+  MyApiResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - MyApiGateway
+          - RootResourceId
+      RestApiId:
+        Ref: MyApiGateway
+      PathPart: 'swapi'
+  
+  MyApiMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId:
+        Fn::GetAtt:
+          - MyApiResource
+          - Id
+      RestApiId:
+        Ref: MyApiGateway
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations
 
 Outputs:
   LambdaFunctionName:
