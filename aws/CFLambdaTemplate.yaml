@@ -100,23 +100,22 @@ Resources:
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      ParentId:
-        Fn::GetAtt:
-          - MyApiGateway
-          - Id     
-      RestApiId:
-        Ref: MyApiGateway
-      PathPart: 'films'
+      RestApiId: !Ref MyApiGateway
+      ParentId: !GetAtt 
+        - MyApiGateway
+        - RootResourceId
+      PathPart: films
   
   MyApiMethod:
     Type: 'AWS::ApiGateway::Method'
     Properties:
+      ApiKeyRequired: False
       AuthorizationType: NONE
       HttpMethod: POST
       ResourceId:
         Fn::GetAtt:
           - MyApiResource
-          - Id
+          - ResourceId
       RestApiId:
         Ref: MyApiGateway
       Integration:
