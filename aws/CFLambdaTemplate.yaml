@@ -116,17 +116,13 @@ Resources:
       ApiKeyRequired: False
       AuthorizationType: NONE
       HttpMethod: POST
-      ResourceId:
-        Fn::GetAtt:
-          - StackAPIResource
-          - ResourceId
-      RestApiId:
-        Ref: StackAPI
+      ResourceId: !GetAtt StackAPIResource.Id
+      RestApiId: !Ref StackAPI
       Integration:
-        IntegrationHttpMethod: POST
         Type: AWS_PROXY
+        IntegrationHttpMethod: POST
         Uri:
-          Fn::Sub: "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/*"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SWAPIFunction.Arn}/invocations"
 
   SWAPIStackAPIPermission:
     Type: 'AWS::Lambda::Permission'
