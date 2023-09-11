@@ -99,7 +99,7 @@ Resources:
             - Effect: Allow
               Action:
                 - lambda:InvokeFunction
-              Resource: arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function
+              Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
   
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
