@@ -2,28 +2,28 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation Template for SWAPI Stack
 
 Parameters:
-  S3KeyName:
+  LambdaFunctionCode:
     Description: SWAPI Stack LambdaFunction Code
     Type: String
     Default: lambda_function.zip
 
 Resources:
-  MyS3Bucket:
+  SWAPIBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: swapibucket1
 
-  MySQSQueue:
+  SWAPIQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
       QueueName: swapiqueue
 
-  MyApiGateway:
+  StackAPI:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: SWAPI
 
-  MyLambdaFunction:
+  SWAPIFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName: SWAPIFunction
@@ -36,12 +36,12 @@ Resources:
           - Arn
       Code:
         S3Bucket: travel1s3bucket
-        S3Key: !Ref S3KeyName
+        S3Key: !Ref LambdaFunctionCode
       Environment:
         Variables:
           SQS_QUEUE_URL:
             Fn::GetAtt:
-              - MySQSQueue
+              - SWAPIQueue
               - QueueUrl
 
   LambdaExecutionRole:
@@ -74,7 +74,7 @@ Resources:
                 - sqs:DeleteMessage
               Resource:
                 Fn::GetAtt:
-                  - MySQSQueue
+                  - SWAPIQueue
                   - Arn
             - Effect: Allow
               Action: 
@@ -95,7 +95,7 @@ Resources:
               Resource:
                 Fn::Sub:
                   - arn:aws:s3:::${BucketName}/*
-                  - BucketName: !Ref MyS3Bucket
+                  - BucketName: !Ref SWAPIBucket
             - Effect: Allow
               Action:
                 - lambda:InvokeFunction
@@ -104,9 +104,9 @@ Resources:
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      RestApiId: !Ref MyApiGateway
+      RestApiId: !Ref StackAPI
       ParentId: !GetAtt 
-        - MyApiGateway
+        - StackAPI
         - RootResourceId
       PathPart: films
   
@@ -121,44 +121,44 @@ Resources:
           - MyApiResource
           - ResourceId
       RestApiId:
-        Ref: MyApiGateway
+        Ref: StackAPI
       Integration:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
         Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SWAPIFunction.Arn}/invocations
 
   LambdaApiGatewayPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt MyLambdaFunction.Arn
+      FunctionName: !GetAtt SWAPIFunction.Arn
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MyApi}/*/*/*"
 
 Outputs:
-  LambdaFunctionName:
+  SWAPIFunction:
     Description: SWAPIFunction Lambda Code
     Value:
-      Ref: MyLambdaFunction
+      Ref: SWAPIFunction
 
-  SQSQueueURL:
+  SWAPIQueue:
     Description: SWAPI SQS Queue
     Value:
       Fn::GetAtt:
-        - MySQSQueue
+        - SWAPIQueue
         - QueueUrl
 
-  S3BucketName:
+  SWAPI_S3_Bucket:
     Description: SWAPI S3 Bucket
     Value:
-      Ref: MyS3Bucket
+      Ref: SWAPIBucket
 
-  S3ObjectKey:
+  LambdaFunctionCode:
     Description: LambdaFunctionCode Object Key
-    Value: !Ref S3KeyName
+    Value: !Ref LambdaFunctionCode
  
   ApiGatewayEndpoint:
     Description: API Gateway Endpoint
     Value:
-      Fn::Sub: "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
+      Fn::Sub: "https://${StackAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
