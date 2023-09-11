@@ -99,7 +99,7 @@ Resources:
             - Effect: Allow
               Action:
                 - lambda:InvokeFunction
-              Resource: arn:aws:lambda:us-east-1:876332050529:function/SWAPI_Function
+              Resource: arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function
   
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
@@ -127,6 +127,14 @@ Resources:
         Type: AWS_PROXY
         Uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SWAPIFunction.Arn}/invocations
+
+  LambdaApiGatewayPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt SWAPIFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/*"
 
 Outputs:
   LambdaFunctionName:
