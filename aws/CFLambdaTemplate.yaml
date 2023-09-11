@@ -108,7 +108,7 @@ Resources:
       ParentId: !GetAtt 
         - StackAPI
         - RootResourceId
-      PathPart: films
+      PathPart: "/*"
   
   StackAPIMethod:
     Type: 'AWS::ApiGateway::Method'
