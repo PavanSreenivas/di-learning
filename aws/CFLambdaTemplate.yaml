@@ -102,7 +102,7 @@ Resources:
     Properties:
       ParentId: zy42vdhrdh
       RestApiId: 6ndpn14etd
-      PathPart: 'films'
+      PathPart: 'movies'
   
   MyApiMethod:
     Type: 'AWS::ApiGateway::Method'
@@ -118,7 +118,7 @@ Resources:
       Integration:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
-        Uri: arn:aws:execute-api:us-east-1:876332050529:6ndpn14etd/*/POST/films
+        Uri: arn:aws:execute-api:us-east-1:876332050529:6ndpn14etd/*/POST/movies
 
 Outputs:
   LambdaFunctionName:
