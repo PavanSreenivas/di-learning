@@ -94,19 +94,19 @@ Resources:
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: SWAPIFilms
-
+      Name: SWAPI
+  
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      RestApiId:
-        Ref: MyApiGateway
       ParentId:
         Fn::GetAtt:
           - MyApiGateway
-          - RootResourceId
-      PathPart: films
-
+          - Id      
+      RestApiId:
+        Ref: MyApiGateway
+      PathPart: 'films'
+  
   MyApiMethod:
     Type: 'AWS::ApiGateway::Method'
     Properties:
@@ -121,8 +121,7 @@ Resources:
       Integration:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
-        Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations
+        Uri: arn:aws:execute-api:us-east-1:876332050529:6ndpn14etd/*/POST/films
 
 Outputs:
   LambdaFunctionName:
@@ -148,5 +147,4 @@ Outputs:
  
   ApiGatewayEndpoint:
     Description: Endpoint URL of the API Gateway
-    Value:
-      Fn::Sub: "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
+    Value: "https://6ndpn14etd.execute-api.us-east-1.amazonaws.com/film_data/films"
