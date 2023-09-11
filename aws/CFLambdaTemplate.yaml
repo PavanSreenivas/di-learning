@@ -21,7 +21,7 @@ Resources:
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: SWAPI
+      Name: StackAPI
 
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
@@ -96,6 +96,10 @@ Resources:
                 Fn::Sub:
                   - arn:aws:s3:::${BucketName}/*
                   - BucketName: !Ref MyS3Bucket
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource: arn:aws:lambda:us-east-1:876332050529:function/SWAPI_Function
   
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
