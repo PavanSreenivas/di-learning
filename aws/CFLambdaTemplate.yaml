@@ -21,7 +21,7 @@ Resources:
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      ApiName: StackAPI
+      Name: SWAPI
 
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
