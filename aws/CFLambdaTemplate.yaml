@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: CloudFormation Template for SWAPI Stack
+Description: CloudFormation template for Lambda, SQS, and S3
 
 Parameters:
-  LambdaFunctionCode:
-    Description: SWAPI Stack LambdaFunction Code
+  SWAPIFunctionCode:
+    Description: SWAPIFunction Code
     Type: String
     Default: lambda_function.zip
 
@@ -36,7 +36,7 @@ Resources:
           - Arn
       Code:
         S3Bucket: travel1s3bucket
-        S3Key: !Ref LambdaFunctionCode
+        S3Key: !Ref SWAPIFunctionCode
       Environment:
         Variables:
           SQS_QUEUE_URL:
@@ -89,7 +89,7 @@ Resources:
               Resource: "*"
             - Effect: Allow
               Action:
-                - s3:GetObject  # Added permission to get the S3 object
+                - s3:GetObject  
                 - s3:PutObject
                 - s3:PutObjectAcl
               Resource:
@@ -101,7 +101,7 @@ Resources:
                 - lambda:InvokeFunction
               Resource: arn:aws:lambda:us-east-1:876332050529:function/SWAPI_Function
   
-  MyApiResource:
+  StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
       RestApiId: !Ref StackAPI
@@ -110,7 +110,7 @@ Resources:
         - RootResourceId
       PathPart: films
   
-  MyApiMethod:
+  StackAPIMethod:
     Type: 'AWS::ApiGateway::Method'
     Properties:
       ApiKeyRequired: False
@@ -118,7 +118,7 @@ Resources:
       HttpMethod: POST
       ResourceId:
         Fn::GetAtt:
-          - MyApiResource
+          - StackAPIResource
           - ResourceId
       RestApiId:
         Ref: StackAPI
@@ -126,19 +126,11 @@ Resources:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
         Uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SWAPIFunction.Arn}/invocations
-
-  LambdaApiGatewayPermission:
-    Type: 'AWS::Lambda::Permission'
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt SWAPIFunction.Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MyApi}/*/*/*"
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations
 
 Outputs:
-  SWAPIFunction:
-    Description: SWAPIFunction Lambda Code
+  LambdaFunctionName:
+    Description: SWAPIStack Function Code Name
     Value:
       Ref: SWAPIFunction
 
@@ -149,16 +141,16 @@ Outputs:
         - SWAPIQueue
         - QueueUrl
 
-  SWAPI_S3_Bucket:
+  SWAPIBuket:
     Description: SWAPI S3 Bucket
     Value:
       Ref: SWAPIBucket
 
-  LambdaFunctionCode:
-    Description: LambdaFunctionCode Object Key
-    Value: !Ref LambdaFunctionCode
+  SWAPIFunctionCode:
+    Description: LambdaFunctionCode Key
+    Value: !Ref SWAPIBucket
  
-  ApiGatewayEndpoint:
+  StackAPI:
     Description: API Gateway Endpoint
     Value:
       Fn::Sub: "https://${StackAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
