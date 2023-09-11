@@ -21,7 +21,7 @@ Resources:
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: SWAPI
+      ApiName: StackAPI
 
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
@@ -150,4 +150,4 @@ Outputs:
   ApiGatewayEndpoint:
     Description: Endpoint URL of the API Gateway
     Value:
-      Fn::Sub: "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
+      Fn::Sub: "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
