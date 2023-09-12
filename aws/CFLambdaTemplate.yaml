@@ -127,17 +127,6 @@ Resources:
                 - lambda:InvokeFunction
               Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
 
-  LambdaToSQSTrigger:
-    Type: 'AWS::Lambda::EventSourceMapping'
-    Properties:
-      BatchSize: 1
-      EventSourceArn:
-        Fn::GetAtt:
-          - SWAPIQueue
-          - Arn
-      FunctionName:
-        Ref: SWAPIFunction
-
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
@@ -163,13 +152,13 @@ Resources:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
         Uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaToSQSTrigger.Arn}/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SQSLambdaTrigger.Arn}/invocations"
 
   SWAPIStackAPIPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt LambdaToSQSTrigger.Arn
+      FunctionName: !GetAtt SQSLambdaTrigger.Arn
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/films"
    
@@ -184,6 +173,17 @@ Resources:
       StageName: StackAPIStage
       RestApiId: !Ref StackAPI
       DeploymentId: !Ref StackAPIDeploy 
+
+  LambdaToSQSTrigger:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    Properties:
+      BatchSize: 1
+      EventSourceArn:
+        Fn::GetAtt:
+          - SWAPIQueue
+          - Arn
+      FunctionName:
+        Ref: SWAPIFunction
 
 Outputs:
   SWAPIFunction:
