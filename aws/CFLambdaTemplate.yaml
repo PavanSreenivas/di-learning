@@ -38,12 +38,6 @@ Resources:
       Code:
         S3Bucket: travel1s3bucket
         S3Key: lambda_sqs_trigger.zip
-      Environment:
-        Variables:
-          SQS_QUEUE_URL:
-            Fn::GetAtt:
-              - SWAPIQueue
-              - QueueUrl
 
   SWAPIFunction:
     Type: 'AWS::Lambda::Function'
@@ -173,6 +167,17 @@ Resources:
       StageName: StackAPIStage
       RestApiId: !Ref StackAPI
       DeploymentId: !Ref StackAPIDeploy 
+
+  LambdaToSQSTrigger:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    Properties:
+      BatchSize: 1
+      EventSourceArn:
+        Fn::GetAtt:
+          - SWAPIQueue
+          - Arn
+      FunctionName:
+        Ref: SWAPIFunction
 
 Outputs:
   SWAPIFunction:
