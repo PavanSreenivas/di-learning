@@ -18,6 +18,10 @@ queue_url = f"https://sqs.us-east-1.amazonaws.com/876332050529/{queue_name}"
 film_url = "https://swapi.dev/api/films/"
 
 def lambda_handler(event,context):
+
+    for record in event['Records']:
+        data = json.loads(record['body'])
+        print('Received data:', data)
     
     #from lambda_sqs_trigger
     for message in event['Records']:
