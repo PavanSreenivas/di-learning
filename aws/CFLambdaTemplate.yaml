@@ -28,6 +28,7 @@ Resources:
     Properties:
       FunctionName: SQSLambdaTrigger
       Runtime: python3.9
+      Timeout: 230
       Handler: lambda_sqs_trigger.lambda_handler
       Role:
         Fn::GetAtt:
