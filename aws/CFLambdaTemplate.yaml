@@ -17,6 +17,7 @@ Resources:
     Type: 'AWS::SQS::Queue'
     Properties:
       QueueName: swapistackqueue
+      VisibilityTimeout: 230
 
   StackAPI:
     Type: 'AWS::ApiGateway::RestApi'
@@ -125,12 +126,6 @@ Resources:
               Action:
                 - lambda:InvokeFunction
               Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
-  
-  SWAPIStackQueue:
-    Type: 'AWS::SQS::Queue'
-    Properties:
-      QueueName: swapistackqueue
-      VisibilityTimeout: 230
 
   LambdaToSQSTrigger:
     Type: 'AWS::Lambda::EventSourceMapping'
