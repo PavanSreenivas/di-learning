@@ -23,6 +23,26 @@ Resources:
     Properties:
       Name: StackAPI
 
+  SQSLambdaTrigger:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: SQSLambdaTrigger
+      Runtime: python3.9
+      Handler: lambda_sqs_trigger.lambda_handler
+      Role:
+        Fn::GetAtt:
+          - LambdaExecutionRole
+          - Arn
+      Code:
+        S3Bucket: travel1s3bucket
+        S3Key: lambda_sqs_trigger.zip
+      Environment:
+        Variables:
+          SQS_QUEUE_URL:
+            Fn::GetAtt:
+              - SWAPIQueue
+              - QueueUrl
+
   SWAPIFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
@@ -100,7 +120,22 @@ Resources:
               Action:
                 - lambda:InvokeFunction
               Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
   
+  LambdaToSQSTrigger:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    Properties:
+      BatchSize: 1
+      EventSourceArn:
+        Fn::GetAtt:
+          - SWAPIQueue
+          - Arn
+      FunctionName:
+        Ref: SWAPIFunction
+
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
@@ -126,13 +161,13 @@ Resources:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
         Uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SWAPIFunction.Arn}/invocations"
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaToSQSTrigger.Arn}/invocations"
 
   SWAPIStackAPIPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt SWAPIFunction.Arn
+      FunctionName: !GetAtt LambdaToSQSTrigger.Arn
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/films"
    
@@ -147,15 +182,18 @@ Resources:
       StageName: StackAPIStage
       RestApiId: !Ref StackAPI
       DeploymentId: !Ref StackAPIDeploy 
-    
-
 
 Outputs:
-  LambdaFunctionName:
+  SWAPIFunction:
     Description: SWAPIStack Function Code Name
     Value:
       Ref: SWAPIFunction
 
+  SQSLambdaTrigger:
+    Description: SWAPIStack Function Code with SQS to Trigger Lambda
+    Value:
+      Ref: SQSLambdaTrigger
+  
   SWAPIQueue:
     Description: SWAPI SQS Queue
     Value:
