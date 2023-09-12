@@ -126,11 +126,16 @@ Resources:
                 - lambda:InvokeFunction
               Resource: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
   
+  SWAPIStackQueue:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      QueueName: swapistackqueue
+      VisibilityTimeout: 230
+
   LambdaToSQSTrigger:
     Type: 'AWS::Lambda::EventSourceMapping'
     Properties:
       BatchSize: 1
-      Timeout: 230
       EventSourceArn:
         Fn::GetAtt:
           - SWAPIQueue
