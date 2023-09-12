@@ -130,6 +130,7 @@ Resources:
     Type: 'AWS::Lambda::EventSourceMapping'
     Properties:
       BatchSize: 1
+      Timeout: 230
       EventSourceArn:
         Fn::GetAtt:
           - SWAPIQueue
