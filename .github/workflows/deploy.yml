@@ -33,10 +33,17 @@ jobs:
 
         - name: Zip Archive
           run: zip -r -j lambda_function.zip src/lambda_function.py
-  
-        - name: Upload to S3
+
+        - name: Zip Archive
+          run: zip -r -j lambda_sqs_trigger.zip src/lambda_sqs_trigger.py
+          
+        - name: Upload lambda_function to S3
           run: |
             aws s3 cp lambda_function.zip s3://travel1s3bucket/
+        
+        - name: Upload lambda_sqs_trigger to S3
+          run: |
+            aws s3 cp lambda_sqs_trigger.zip s3://travel1s3bucket/
             
   deploy_infra:
       runs-on: ubuntu-latest
