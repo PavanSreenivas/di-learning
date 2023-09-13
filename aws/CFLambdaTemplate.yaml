@@ -119,9 +119,7 @@ Resources:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
       RestApiId: !Ref StackAPI
-      ParentId: !GetAtt 
-        - StackAPI
-        - RootResourceId
+      ParentId: !GetAtt StackAPI.RootResourceId
       PathPart: films
   
   StackAPIMethod:
@@ -130,17 +128,12 @@ Resources:
       ApiKeyRequired: False
       AuthorizationType: NONE
       HttpMethod: POST
-      ResourceId:
-        Fn::GetAtt:
-          - StackAPIResource
-          - ResourceId
-      RestApiId:
-        Ref: StackAPI
+      ResourceId: !GetAtt StackAPIResource.ResourceId
+      RestApiId: !Ref StackAPI
       Integration:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
-        Uri:
-          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SQSLambdaTrigger.Arn}/invocations"
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SQSLambdaTrigger.Arn}/invocations"
 
   SWAPIStackAPIPermission:
     Type: 'AWS::Lambda::Permission'
@@ -166,27 +159,21 @@ Resources:
     Type: 'AWS::Lambda::EventSourceMapping'
     Properties:
       BatchSize: 10
-      EventSourceArn: !Ref StackAPIDeploy 
-      FunctionName:
-        Ref: SWAPIFunction
+      EventSourceArn: !GetAtt SWAPIQueue.Arn
+      FunctionName: !Ref SWAPIFunction
 
 Outputs:
   SWAPIFunction:
     Description: SWAPIStack Function Code Name
-    Value:
-      Ref: SWAPIFunction
+    Value: !Ref SWAPIFunction
 
   SQSLambdaTrigger:
     Description: SWAPIStack Function Code with SQS to Trigger Lambda
-    Value:
-      Ref: SQSLambdaTrigger
+    Value: !Ref SQSLambdaTrigger
   
   SWAPIQueue:
     Description: SWAPI SQS Queue
-    Value:
-      Fn::GetAtt:
-        - SWAPIQueue
-        - QueueUrl
+    Value: !GetAtt SWAPIQueue.QueueUrl
 
   SWAPIBuket:
     Description: SWAPI S3 Bucket
@@ -199,5 +186,4 @@ Outputs:
  
   StackAPI:
     Description: API Gateway Endpoint
-    Value:
-      Fn::Sub: "https://${StackAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
+    Value: !Sub "https://${StackAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
