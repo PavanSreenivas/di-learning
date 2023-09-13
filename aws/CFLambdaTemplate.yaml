@@ -166,10 +166,7 @@ Resources:
     Type: 'AWS::Lambda::EventSourceMapping'
     Properties:
       BatchSize: 10
-      EventSourceArn:
-        Fn::GetAtt:
-          - SWAPIQueue
-          - Arn
+      EventSourceArn: !Ref StackAPIDeploy 
       FunctionName:
         Ref: SWAPIFunction
 
