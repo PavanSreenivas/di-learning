@@ -83,8 +83,8 @@ Resources:
                 - logs:GetLogEvents
                 - logs:FilterLogEvents
               Resource: 
-                - arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/SQSLambdaTrigger:*
-                - arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/SWAPI_Function:*
+                - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/SQSLambdaTrigger:*"
+                - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/SWAPI_Function:*"
             - Effect: Allow
               Action:
                 - sqs:SendMessage
