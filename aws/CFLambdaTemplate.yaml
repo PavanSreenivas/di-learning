@@ -55,10 +55,7 @@ Resources:
         S3Key: !Ref SWAPIFunctionCode
       Environment:
         Variables:
-          SQS_QUEUE_URL:
-            Fn::GetAtt:
-              - SWAPIQueue
-              - QueueUrl
+          SQS_QUEUE_URL: !GetAtt SWAPIQueue.QueueUrl
 
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
