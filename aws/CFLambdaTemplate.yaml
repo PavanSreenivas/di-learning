@@ -79,14 +79,7 @@ Resources:
                 - "arn:aws:execute-api:us-east-1:876332050529:wsob8hyasf/*/POST/films"
             - Effect: Allow
               Action:
-                - sqs:SendMessage
-                - sqs:ReceiveMessage
-                - sqs:GetQueueAttributes
-                - sqs:GetQueueUrl
-                - sqs:DeleteMessage
-                - sqs:ListDeadLetterSourceQueues
-                - sqs:ListQueues
-                - sqs:ListMessageMoveTasks
+                - sqs:* 
               Resource: !GetAtt SWAPIQueue.Arn
             - Effect: Allow
               Action: 
