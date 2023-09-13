@@ -141,7 +141,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt SQSLambdaTrigger.Arn
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/*/films"
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/StackAPIStage/films"
    
   StackAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
