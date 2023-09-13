@@ -165,7 +165,7 @@ Resources:
   LambdaToSQSTrigger:
     Type: 'AWS::Lambda::EventSourceMapping'
     Properties:
-      BatchSize: 1
+      BatchSize: 10
       EventSourceArn:
         Fn::GetAtt:
           - SWAPIQueue
