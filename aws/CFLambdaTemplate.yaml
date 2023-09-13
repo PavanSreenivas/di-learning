@@ -86,8 +86,8 @@ Resources:
                 - logs:GetLogEvents
                 - logs:FilterLogEvents
               Resource: 
-                - arn:aws:logs:*:*:log-group:/aws/lambda/SQSLambdaTrigger:*
-                - arn:aws:logs:*:*:log-group:/aws/lambda/SWAPI_Function:*
+                - arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/SQSLambdaTrigger:*
+                - arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/SWAPI_Function:*
             - Effect: Allow
               Action:
                 - sqs:SendMessage
@@ -95,10 +95,10 @@ Resources:
                 - sqs:GetQueueAttributes
                 - sqs:GetQueueUrl
                 - sqs:DeleteMessage
-              Resource:
-                Fn::GetAtt:
-                  - SWAPIQueue
-                  - Arn
+                - sqs:ListDeadLetterSourceQueues
+                - sqs:ListQueues
+                - sqs:ListMessageMoveTasks
+              Resource: !GetAtt SWAPIQueue.Arn
             - Effect: Allow
               Action: 
                 - cloudformation:CreateStack
@@ -173,7 +173,9 @@ Resources:
     Properties:
       StageName: StackAPIStage
       RestApiId: !Ref StackAPI
-      DeploymentId: !Ref StackAPIDeploy 
+      DeploymentId: 
+        Fn::Import:
+        Name: !Ref StackAPIDeploy 
 
   LambdaToSQSTrigger:
     Type: 'AWS::Lambda::EventSourceMapping'
