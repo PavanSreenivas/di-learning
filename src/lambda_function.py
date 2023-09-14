@@ -1,33 +1,22 @@
 import os
 import json
 import urllib.request
+import urllib.parse
 import boto3
 
-#boto3 clients
 s3 = boto3.client("s3")
-sqs = boto3.client("sqs")
-
-#S3 Bucket Name
+sqs = boto3.client('sqs')
+queue_url = 'https://sqs.us-east-1.amazonaws.com/876332050529/swapistackqueue'
 bucket_name = 'swapistackbucket'
 
-#SQS Queue Name
-queue_name = 'swapistackqueue'    
-queue_url = f"https://sqs.us-east-1.amazonaws.com/876332050529/{queue_name}"
-
-#SWAPI Film Data URL
-film_url = "https://swapi.dev/api/films/"
-
 def lambda_handler(event,context):
-
+    
     for record in event['Records']:
         data = json.loads(record['body'])
         print('Received data:', data)
     
-    #from lambda_sqs_trigger
-    for message in event['Records']:
-        data = json.loads(message['body'])
-        print('Received data:', data)
-
+    film_url = urllib.parse.urljoin(data["base_url"],data["extension"])
+    
     # Fetch Data from SWAPI
     response = urllib.request.urlopen(film_url)
     response_data = response.read()
@@ -56,7 +45,6 @@ def lambda_handler(event,context):
         
         #DATA as Message to SQS
         message_body = json.dumps(film_actor)
-        sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(message_body))
         
         #Upload files to S3 Bucket
         s3.put_object(Bucket = bucket_name, Key = folder+film_filename, Body = message_body )
@@ -65,4 +53,3 @@ def lambda_handler(event,context):
         "statusCode": 200,
         "body": "JSON Files Uploaded Succesfully to S3 Bucket with SQS Message"
     }
-  
