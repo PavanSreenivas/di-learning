@@ -162,21 +162,21 @@ Resources:
       StageName: StackAPIStage
       RestApiId: !Ref StackAPI
       DeploymentId:  !Ref StackAPIDeploy 
-    MethodSettings:
+      MethodSettings:
         - ResourcePath: "/*"
           HttpMethod: "*"
           LoggingLevel: INFO
       AccessLogSetting:
         DestinationArn: !GetAtt StackAPILogs.Arn
         Format: $context.extendedRequestId $context.identity.sourceIp $context.identity.caller $context.identity.user [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId
-    StackAPILogs:
+  
+  StackAPILogs:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Join
         - '-'
         - - !Ref StackAPI
           - access-logs
-    
 
   LambdaToSQSTrigger:
     Type: 'AWS::Lambda::EventSourceMapping'
