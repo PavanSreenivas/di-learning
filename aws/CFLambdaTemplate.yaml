@@ -114,8 +114,6 @@ Resources:
               Resource: 
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
-            ManagedPolicyArns:
-              - arn:aws:iam::aws:policy/AWSLambda_FullAccess
 
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
@@ -148,8 +146,8 @@ Resources:
   SWAPIFunctionSQSPermission:
     Type: AWS::Lambda::Permission
     Properties:
-      Action: lambda:InvokeFunction
       FunctionName: !GetAtt SWAPIFunction.Arn
+      Action: lambda:InvokeFunction
       Principal: events.amazonaws.com
       SourceArn: !GetAtt SWAPIQueue.Arn
    
@@ -169,7 +167,6 @@ Resources:
     Type: 'AWS::Lambda::EventSourceMapping'
     Properties:
       BatchSize: 10
-      Enabled: true
       EventSourceArn: !GetAtt SWAPIQueue.Arn
       FunctionName: !Ref SWAPIFunction
 
