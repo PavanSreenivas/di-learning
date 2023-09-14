@@ -22,16 +22,6 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt InvalidQueue.Arn
         maxReceiveCount: 3
-        
-  ValidQueue:
-    Type: "AWS::SQS::Queue"
-    Properties:
-      QueueName: ValidQueue
-      DelaySeconds: 0
-      VisibilityTimeout: 30
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt InvalidQueue.Arn
-        maxReceiveCount: 3
 
   InvalidQueue:
     Type: "AWS::SQS::Queue"
@@ -93,10 +83,7 @@ Resources:
                 - logs:PutLogEvents
                 - logs:GetLogEvents
                 - logs:FilterLogEvents
-              Resource: 
-                - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/SQSLambdaTrigger:*"
-                - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/SWAPI_Function:*"
-                - "arn:aws:execute-api:us-east-1:876332050529:wsob8hyasf/*/POST/films"
+              Resource: "*"
             - Effect: Allow
               Action:
                 - sqs:* 
@@ -155,6 +142,14 @@ Resources:
       FunctionName: !GetAtt SQSLambdaTrigger.Arn
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*/POST/films"
+
+  SWAPIFunctionSQSPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt SQSLambdaTrigger.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt SWAPIFunction.Arn
    
   StackAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
