@@ -1,20 +1,22 @@
 import boto3
 import json
 
-sqs = boto3.client('sqs')
-queue_name = 'swapistackqueue'    
-queue_url = f"https://sqs.us-east-1.amazonaws.com/876332050529/{queue_name}"
-
 def lambda_handler(event, context):
     
+    sqs = boto3.client('sqs')
+    queue_url = 'https://sqs.us-east-1.amazonaws.com/876332050529/swapistackqueue'
+    
     data = json.loads(event['body'])
-
-    print("Received Movie Data:")
-    print(json.dumps(data, indent=2))
-        
-    sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(data))
+    
+    message = json.dumps(data)
+    print(data)
+    
+    response = sqs.send_message(QueueUrl=queue_url,MessageBody = message)
+    
+    response_code = response["ResponseMetadata"]["HTTPStatusCode"]
     
     return {
-        "statusCode": 200,
-        "body": json.dumps({"message": "Data Received and SQS Message Sent"})
+        "body": json.dumps({
+            "statusCode": response_code,
+            "message": "Data Received and SQS Message Sent"})
     }
