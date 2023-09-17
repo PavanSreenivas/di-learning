@@ -196,7 +196,7 @@ Resources:
       AccessLogSetting:
         DestinationArn: !GetAtt StackAPILogs.Arn
         Format: $context.extendedRequestId $context.identity.sourceIp $context.identity.caller $context.identity.user [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId
-      AccessPolicyId: !Ref APIExecutionRole
+        AccessPolicyId: !Ref APIExecutionRole
 
   StackAPILogs:
     Type: AWS::Logs::LogGroup
