@@ -137,12 +137,15 @@ Resources:
 
   SWAPIStackAPIPermission:
     Type: 'AWS::Lambda::Permission'
+    DependsOn:
+      - StackAPI
+      - SQSLambdaTrigger
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt SQSLambdaTrigger.Arn
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*"
-
+      
   SWAPIFunctionSQSPermission:
     Type: AWS::Lambda::Permission
     Properties:
