@@ -118,10 +118,12 @@ Resources:
   APIExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      Sid: ""
       RoleName: swapicloudstackapi
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement :
+            Sid: ""
           - Effect: Allow
             Principal:
               Service: apigateway.amazonaws.com
