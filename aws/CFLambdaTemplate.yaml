@@ -64,7 +64,7 @@ Resources:
       RoleName: swapicloudstack
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
-        Statement:
+        Statement :
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
@@ -109,6 +109,8 @@ Resources:
                   - arn:aws:s3:::${BucketName}/*
                   - BucketName: !Ref SWAPIBucket
             - Effect: Allow
+              Principal:
+                Service: apigateway.amazonaws.com
               Action:
                 - lambda:InvokeFunction
               Resource: 
