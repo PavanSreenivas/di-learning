@@ -41,7 +41,7 @@ Resources:
       Runtime: python3.9
       Timeout: 230
       Handler: lambda_sqs_trigger.lambda_handler
-      Role: !GetAtt APIExecutionRole.Arn
+      Role: !GetAtt LambdaExecutionRole.Arn
       Code:
         S3Bucket: travel1s3bucket
         S3Key: lambda_sqs_trigger.zip
@@ -64,7 +64,7 @@ Resources:
       RoleName: swapicloudstack
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
-        Statement :
+        Statement_1:
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
@@ -107,13 +107,7 @@ Resources:
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
 
-  APIExecutionRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      RoleName: swapicloudstackapi
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement :
+        Statement_2 :
           - Effect: Allow
             Principal:
               Service: apigateway.amazonaws.com
@@ -133,19 +127,6 @@ Resources:
                 - logs:GetLogEvents
                 - logs:FilterLogEvents
               Resource: !GetAtt StackAPILogs.Arn
-            - Effect: Allow
-              Action:
-                - sqs:SendMessage
-                - sqs:GetQueueAttributes
-                - sqs:DeleteMessage
-                - sqs:ReceiveMessage 
-              Resource: !GetAtt SWAPIQueue.Arn
-            - Effect: Allow
-              Action:
-                - lambda:InvokeFunction
-              Resource: 
-                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
-                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
 
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
