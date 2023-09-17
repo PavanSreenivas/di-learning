@@ -65,7 +65,8 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement :
-          - Effect: Allow
+          - Sid: ""
+            Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
@@ -118,13 +119,12 @@ Resources:
   APIExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
-      Sid: ""
       RoleName: swapicloudstackapi
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement :
-            Sid: ""
-          - Effect: Allow
+          - Sid: ""
+            Effect: Allow
             Principal:
               Service: apigateway.amazonaws.com
             Action: sts:AssumeRole
