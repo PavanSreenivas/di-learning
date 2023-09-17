@@ -41,7 +41,7 @@ Resources:
       Runtime: python3.9
       Timeout: 230
       Handler: lambda_sqs_trigger.lambda_handler
-      Role: !GetAtt LambdaExecutionRole.Arn
+      Role: !GetAtt APIExecutionRole.Arn
       Code:
         S3Bucket: travel1s3bucket
         S3Key: lambda_sqs_trigger.zip
@@ -86,19 +86,11 @@ Resources:
               Resource: "*"
             - Effect: Allow
               Action:
-                - sqs:* 
+                - sqs:SendMessage
+                - sqs:GetQueueAttributes
+                - sqs:DeleteMessage
+                - sqs:ReceiveMessage 
               Resource: !GetAtt SWAPIQueue.Arn
-            - Effect: Allow
-              Action: 
-                - cloudformation:CreateStack
-                - cloudformation:DeleteStack
-                - cloudformation:UpdateStack
-                - cloudformation:DescribeStacks
-                - cloudformation:CreateChangeSet
-                - cloudformation:DescribeChangeSet
-                - cloudformation:DeleteChangeSet
-                - cloudformation:ExecuteChangeSet
-              Resource: "*"
             - Effect: Allow
               Action:
                 - s3:GetObject  
@@ -141,6 +133,19 @@ Resources:
                 - logs:GetLogEvents
                 - logs:FilterLogEvents
               Resource: !GetAtt StackAPILogs.Arn
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage
+                - sqs:GetQueueAttributes
+                - sqs:DeleteMessage
+                - sqs:ReceiveMessage 
+              Resource: !GetAtt SWAPIQueue.Arn
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource: 
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
 
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
