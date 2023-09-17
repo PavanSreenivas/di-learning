@@ -109,13 +109,38 @@ Resources:
                   - arn:aws:s3:::${BucketName}/*
                   - BucketName: !Ref SWAPIBucket
             - Effect: Allow
-              Principal:
-                Service: apigateway.amazonaws.com
               Action:
                 - lambda:InvokeFunction
               Resource: 
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
+
+  APIExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: swapicloudstack
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement :
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: swapi-stack-api
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:DescribeLogGroups
+                - logs:DescribeLogStreams
+                - logs:PutLogEvents
+                - logs:GetLogEvents
+                - logs:FilterLogEvents
+              Resource: !GetAtt StackAPILogs.Arn
 
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
@@ -171,7 +196,8 @@ Resources:
       AccessLogSetting:
         DestinationArn: !GetAtt StackAPILogs.Arn
         Format: $context.extendedRequestId $context.identity.sourceIp $context.identity.caller $context.identity.user [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId
-  
+      AccessPolicyId: !Ref APIExecutionRole
+
   StackAPILogs:
     Type: AWS::Logs::LogGroup
     Properties:
