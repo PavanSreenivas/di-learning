@@ -107,34 +107,6 @@ Resources:
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
 
-  APIExecutionRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      RoleName: swapicloudstackapi
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement :
-          - Sid: ""
-            Effect: Allow
-            Principal:
-              Service: apigateway.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: swapi-stack-api
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:DescribeLogGroups
-                - logs:DescribeLogStreams
-                - logs:PutLogEvents
-                - logs:GetLogEvents
-                - logs:FilterLogEvents
-              Resource: "*"
-
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
