@@ -87,7 +87,7 @@ Resources:
             - Effect: Allow
               Action:
                 - sqs: SendMessage
-                - sqs: RecieveMessage
+                - sqs: ReceiveMessage
                 - sqs: GetQueueAttributes
                 - sqs: DeleteMessage
               Resource: !GetAtt SWAPIQueue.Arn
