@@ -64,53 +64,53 @@ Resources:
       RoleName: swapicloudstack
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
-        Statement_1:
+        Statement :
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
-        Policies:
-          - PolicyName: swapi-policy
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:DescribeLogGroups
-                  - logs:DescribeLogStreams
-                  - logs:PutLogEvents
-                  - logs:GetLogEvents
-                  - logs:FilterLogEvents
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  - sqs:SendMessage
-                  - sqs:GetQueueAttributes
-                  - sqs:DeleteMessage
-                  - sqs:ReceiveMessage 
-                Resource: !GetAtt SWAPIQueue.Arn
-              - Effect: Allow
-                Action:
-                  - s3:GetObject  
-                  - s3:PutObject
-                  - s3:PutObjectAcl
-                Resource:
-                  Fn::Sub:
-                    - arn:aws:s3:::${BucketName}/*
-                    - BucketName: !Ref SWAPIBucket
-              - Effect: Allow
-                Action:
-                  - lambda:InvokeFunction
-                Resource: 
-                  - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
-                  - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
-              - Effect: Allow
-                Action:
-                  - execute-api:Invoke
-                Resource:
-                  - "arn:aws:execute-api:${AWS:Region}:${AWS:AccountID}:${StackAPI}/StackAPIStage/POST/*"
+      Policies:
+        - PolicyName: swapi-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:DescribeLogGroups
+                - logs:DescribeLogStreams
+                - logs:PutLogEvents
+                - logs:GetLogEvents
+                - logs:FilterLogEvents
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage
+                - sqs:GetQueueAttributes
+                - sqs:DeleteMessage
+                - sqs:ReceiveMessage 
+              Resource: !GetAtt SWAPIQueue.Arn
+            - Effect: Allow
+              Action:
+                - s3:GetObject  
+                - s3:PutObject
+                - s3:PutObjectAcl
+              Resource:
+                Fn::Sub:
+                  - arn:aws:s3:::${BucketName}/*
+                  - BucketName: !Ref SWAPIBucket
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource: 
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SWAPI_Function"
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/SQSLambdaTrigger"
+            - Effect: Allow
+              Action:
+                - execute-api:Invoke
+              Resource:
+                - "arn:aws:execute-api:${AWS:Region}:${AWS:AccountID}:${StackAPI}/StackAPIStage/POST/*"
   
   StackAPIResource:
     Type: 'AWS::ApiGateway::Resource'
