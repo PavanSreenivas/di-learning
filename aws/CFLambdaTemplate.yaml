@@ -73,7 +73,7 @@ Resources:
               - POST
       Targets:
         - Arn: !GetAtt SWAPIFunction.Arn
-          Id: SWAPIFunctionTarget
+          Id: SWAPIFunction
 
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
