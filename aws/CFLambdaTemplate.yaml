@@ -58,6 +58,23 @@ Resources:
         S3Bucket: travel1s3bucket
         S3Key: !Ref SWAPIFunctionCode
 
+  APIGatewayToSQSEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Trigger SQSLambdaTrigger on API POST
+      EventPattern:
+        source:
+          - aws.apigateway
+        detail:
+          eventName:
+            - 'Invoke'
+          requestContext:
+            httpMethod:
+              - POST
+      Targets:
+        - Arn: !GetAtt SQSLambdaTrigger.Arn
+          Id: SQSLambdaTriggerTarget
+
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -152,8 +169,8 @@ Resources:
       FunctionName: !GetAtt SWAPIFunction.Arn
       Action: lambda:InvokeFunction
       Principal: events.amazonaws.com
-      SourceArn: !GetAtt SWAPIQueue.Arn
-   
+      SourceArn: !GetAtt APIGatewayToSQSRule.Arn  
+
   StackAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
     Properties:
@@ -183,6 +200,8 @@ Resources:
 
   LambdaToSQSTrigger:
     Type: 'AWS::Lambda::EventSourceMapping'
+    DependsOn:
+      - APIGatewayToSQSRulePermission
     Properties:
       BatchSize: 10
       EventSourceArn: !GetAtt SWAPIQueue.Arn
