@@ -61,7 +61,7 @@ Resources:
   APIGatewayToSQSEventRule:
     Type: AWS::Events::Rule
     Properties:
-      Description: Trigger SQSLambdaTrigger on API POST
+      Description: Trigger SWAPIFunction with sqs message on POST
       EventPattern:
         source:
           - aws.apigateway
@@ -72,8 +72,8 @@ Resources:
             httpMethod:
               - POST
       Targets:
-        - Arn: !GetAtt SQSLambdaTrigger.Arn
-          Id: SQSLambdaTriggerTarget
+        - Arn: !GetAtt SWAPIFunction.Arn
+          Id: SWAPIFunctionTarget
 
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
