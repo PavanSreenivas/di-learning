@@ -162,14 +162,14 @@ Resources:
       FunctionName: !GetAtt SQSLambdaTrigger.Arn
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${StackAPI}/*"
-      
+
   SWAPIFunctionSQSPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt SWAPIFunction.Arn
       Action: lambda:InvokeFunction
       Principal: events.amazonaws.com
-      SourceArn: !GetAtt APIGatewayToSQSRule.Arn  
+      SourceArn: !GetAtt APIGatewayToSQSEventRule.Arn  
 
   StackAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
@@ -200,8 +200,8 @@ Resources:
 
   LambdaToSQSTrigger:
     Type: 'AWS::Lambda::EventSourceMapping'
-    DependsOn:
-      - APIGatewayToSQSRulePermission
+    DependsOn: 
+      - SWAPIFunctionSQSPermission
     Properties:
       BatchSize: 10
       EventSourceArn: !GetAtt SWAPIQueue.Arn
