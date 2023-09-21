@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'src/bridge/**'
-      - 'src/bridge/**'
+      - 'aws/bridge/**'
       
 jobs:
   deploy_code:
