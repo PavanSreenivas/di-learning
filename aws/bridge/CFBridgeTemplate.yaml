@@ -181,7 +181,7 @@ Resources:
             - Effect: Allow
               Action:
                 - sqs:*
-              Resource: "*"
+              Resource: !GetAtt BridgeQueue.Arn
 
   BridgeDLQAlarm:
     Type: AWS::CloudWatch::Alarm
