@@ -22,7 +22,6 @@ Resources:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: BridgeAPI
-      RoleArn: !GetAtt APIExecutionRole.Arn
 
   BridgeAPIResource:
     Type: 'AWS::ApiGateway::Resource'
@@ -209,7 +208,6 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: BridgeSNSTopic
-
 
 Outputs:
   StackFunction:
