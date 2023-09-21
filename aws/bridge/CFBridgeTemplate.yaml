@@ -183,7 +183,7 @@ Outputs:
     Value: !GetAtt BridgeQueue.QueueUrl
 
   BridgeSNSTopic:
-    Description: Bridge SNS Topic
+    Description: Bridge SNS Topic Notification
     Value: !Ref BridgeSNSTopic
   BridgeAPI:
     Description: API Gateway Endpoint
