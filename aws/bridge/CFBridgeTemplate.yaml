@@ -34,7 +34,8 @@ Resources:
     Type: 'AWS::ApiGateway::Method'
     Properties:
       ApiKeyRequired: False
-      AuthorizationType: NONE
+      AuthorizationType: AWS_IAM
+      AuthorizerId: !Ref APIExecutionRole
       HttpMethod: POST
       ResourceId: !GetAtt BridgeAPIResource.ResourceId
       RestApiId: !Ref BridgeAPI
