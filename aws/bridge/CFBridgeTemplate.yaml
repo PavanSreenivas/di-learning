@@ -44,6 +44,7 @@ Resources:
         Uri: !Sub 
           - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}
           - QueueName: !GetAtt BridgeQueue.QueueName
+        Credentials: !GetAtt APIExecutionRole.Arn 
         PassthroughBehavior: NEVER
         RequestParameters:
           integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
@@ -153,6 +154,37 @@ Resources:
                 - lambda:InvokeFunction
               Resource: 
                 - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/StackFunction"
+  
+  APIExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: apiexecutionrole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: swapi-api-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:DescribeLogGroups
+                - logs:DescribeLogStreams
+                - logs:PutLogEvents
+                - logs:GetLogEvents
+                - logs:FilterLogEvents
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - sqs:* 
+              Resource: "*"
 
   BridgeDLQAlarm:
     Type: AWS::CloudWatch::Alarm
