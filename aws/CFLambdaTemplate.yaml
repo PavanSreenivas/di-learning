@@ -104,7 +104,7 @@ Resources:
             - Effect: Allow
               Action:
                 - sqs:* 
-              Resource: !GetAtt SWAPIQueue.Arn
+              Resource: "*"
             - Effect: Allow
               Action: 
                 - cloudformation:CreateStack
