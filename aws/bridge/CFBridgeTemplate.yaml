@@ -29,9 +29,6 @@ Resources:
       RestApiId: !Ref BridgeAPI
       ParentId: !GetAtt BridgeAPI.RootResourceId
       PathPart: films
-      EndpointConfiguration: 
-        Types:
-          - REGIONAL
   
   BridgeAPIMethod:
     Type: 'AWS::ApiGateway::Method'
