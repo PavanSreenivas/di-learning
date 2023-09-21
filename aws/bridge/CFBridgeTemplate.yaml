@@ -46,10 +46,6 @@ Resources:
           - QueueName: !GetAtt BridgeQueue.QueueName
         Credentials: !GetAtt APIExecutionRole.Arn 
         PassthroughBehavior: NEVER
-        RequestParameters:
-          integration.request.header.Content-Type: "'application/json'"
-      MethodResponses:
-        - StatusCode: 200
 
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
