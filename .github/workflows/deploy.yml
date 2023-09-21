@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main 
-      
+      - src/lambda
+      - aws/lambda
 jobs:
   deploy_code:
       runs-on: ubuntu-latest
@@ -52,7 +53,7 @@ jobs:
             id-token: write
             contents: read
       env:
-        working-directory : ./aws
+        working-directory : ./aws/lambda
             
       steps:
         - name: Checkout Repository
@@ -69,6 +70,6 @@ jobs:
           uses: aws-actions/aws-cloudformation-github-deploy@v1
           with:
             name: SWAPI-Stack
-            template: aws/CFLambdaTemplate.yaml
+            template: aws/lambda/CFLambdaTemplate.yaml
             capabilities: CAPABILITY_NAMED_IAM
           

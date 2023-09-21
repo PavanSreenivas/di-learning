@@ -46,9 +46,9 @@ Resources:
           - QueueName: !GetAtt BridgeQueue.QueueName
         Credentials: !GetAtt APIExecutionRole.Arn 
         PassthroughBehavior: NEVER
-        RequestTemplates:
-          application/json: '{"MessageBody": $input.json("$")}'
-
+        RequestParameters:
+          integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
+     
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:

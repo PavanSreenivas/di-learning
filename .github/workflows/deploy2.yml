@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main 
+      - src/bridge
+      - aws/bridge
       
 jobs:
   deploy_code:
@@ -12,7 +14,7 @@ jobs:
             id-token: write
             contents: read
       env:
-        working-directory : ./src
+        working-directory : ./src/bridge
             
       steps:
         - name: Checkout Repository
