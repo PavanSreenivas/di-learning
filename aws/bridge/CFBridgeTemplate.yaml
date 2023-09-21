@@ -36,7 +36,7 @@ Resources:
       Name: APItoSQSAuthorizer
       RestApiId: !Ref BridgeAPI
       Type: TOKEN  
-      AuthorizerUri: arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${BridgeQueue.QueueName}
+      AuthorizerUri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${StackFunction.Arn}/invocations
       AuthorizerCredentials: !GetAtt APIExecutionRole.Arn
       AuthorizerResultTtlInSeconds: 300  
       IdentityValidationExpression: ^Bearer.*
