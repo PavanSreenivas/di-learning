@@ -48,10 +48,6 @@ Resources:
         PassthroughBehavior: NEVER
         RequestTemplates:
           application/json: '{"MessageBody": $input.json("$")}'
-        IntegrationResponses:
-          - StatusCode: 200
-        MethodResponses:
-          - StatusCode: 200
 
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
