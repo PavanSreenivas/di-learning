@@ -22,7 +22,7 @@ Resources:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: BridgeAPI
-
+  
   BridgeAPIResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
@@ -44,7 +44,7 @@ Resources:
         Uri: !Sub 
           - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}
           - QueueName: !GetAtt BridgeQueue.QueueName
-        Credentials: !GetAtt APIExecutionRole.Arn
+        Credentials: !GetAtt APIExecutionRole.Arn 
         PassthroughBehavior: WHEN_NO_MATCH
         RequestParameters:
           integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
@@ -52,7 +52,7 @@ Resources:
           application/json: '{"Action": "SendMessage", "MessageBody": $input.body}'
         IntegrationResponses:
           - StatusCode: 200
-
+     
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
@@ -182,11 +182,7 @@ Resources:
               Action:
                 - sqs:*
               Resource: "*"
-            - Effect: Allow
-              Action: 
-                - execute-api:Invoke
-              Resource: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${BridgeAPI}/*"
-  
+
   BridgeDLQAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -209,7 +205,7 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: BridgeSNSTopic
-
+      
 Outputs:
   StackFunction:
     Description: Stack Lambda Function Code Name
