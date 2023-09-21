@@ -205,7 +205,7 @@ Resources:
 
 Outputs:
   StackFunction:
-    Description: Stack Function Code Name
+    Description: Stack Lambda Function Name
     Value: !Ref StackFunction
   
   BridgeQueue:
