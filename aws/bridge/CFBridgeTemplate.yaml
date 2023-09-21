@@ -77,7 +77,7 @@ Resources:
     Properties:
       LogGroupName: !Join
         - '-'
-        - - !Ref BridgeAPI
+        - - !Ref BridgeAPIStage
           - access-logs
   
   StackFunction:
