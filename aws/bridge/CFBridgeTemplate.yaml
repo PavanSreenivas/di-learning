@@ -44,13 +44,12 @@ Resources:
         Uri: !Sub 
           - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}
           - QueueName: !GetAtt BridgeQueue.QueueName
-        IntegrationSubtype: SQS
         PassthroughBehavior: NEVER
         RequestParameters:
           integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
       MethodResponses:
         - StatusCode: 200
-        
+
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
