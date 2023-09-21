@@ -46,6 +46,12 @@ Resources:
           - QueueName: !GetAtt BridgeQueue.QueueName
         Credentials: !GetAtt APIExecutionRole.Arn 
         PassthroughBehavior: NEVER
+        RequestTemplates:
+          application/json: '{"MessageBody": $input.json("$")}'
+        IntegrationResponses:
+          - StatusCode: 200
+        MethodResponses:
+          - StatusCode: 200
 
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
@@ -89,6 +95,9 @@ Resources:
         S3Key: lambda_bridge.zip
       DeadLetterConfig:
         TargetArn: !GetAtt BridgeDLQ.Arn
+      Environment:
+        Variables:
+          QUEUE_URL: !GetAtt BridgeQueue.QueueUrl
 
   APIGatewayToSQSEventRule:
     Type: AWS::Events::Rule
@@ -104,16 +113,8 @@ Resources:
             httpMethod:
               - POST
       Targets:
-        - Arn: !GetAtt StackFunction.Arn
-          Id: StackFunctionTarget
-  
-  LambdaToSQSPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      FunctionName: !GetAtt StackFunction.Arn
-      Action: lambda:InvokeFunction
-      Principal: events.amazonaws.com
-      SourceArn: !GetAtt APIGatewayToSQSEventRule.Arn  
+        - Arn: !GetAtt BridgeQueue.Arn
+          Id: BridgeQueueTarget 
 
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
