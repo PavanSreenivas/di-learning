@@ -38,7 +38,7 @@ Resources:
       HttpMethod: POST
       ResourceId: !GetAtt BridgeAPIResource.ResourceId
       RestApiId: !Ref BridgeAPI
-      Credentials: !GetAtt APIExecutionRole.Arn
+      Credentials: !GetAtt APIExecutionRole.Arn 
       Integration:
         Type: AWS
         IntegrationHttpMethod: POST
