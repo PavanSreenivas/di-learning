@@ -3,8 +3,10 @@ name: SWAPI-Stack Deploy
 on:
   push:
     branches:
-      - src/lambda
-      - aws/lambda
+      - main
+    paths:
+      - 'src/lambda/**'
+      - 'aws/lambda/**'
 jobs:
   deploy_code:
       runs-on: ubuntu-latest
