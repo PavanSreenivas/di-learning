@@ -39,8 +39,8 @@ Resources:
       ResourceId: !GetAtt BridgeAPIResource.ResourceId
       RestApiId: !Ref BridgeAPI
       Integration:
-        IntegrationHttpMethod: POST
         Type: AWS
+        IntegrationHttpMethod: POST
         Uri: !Sub 
           - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}
           - QueueName: !GetAtt BridgeQueue.QueueName
@@ -180,7 +180,7 @@ Resources:
               Resource: "*"
             - Effect: Allow
               Action:
-                - sqs:SendMessage
+                - sqs:*
               Resource: "*"
 
   BridgeDLQAlarm:
