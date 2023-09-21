@@ -22,7 +22,7 @@ Resources:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: BridgeAPI
-    Role: !GetAtt APIExecutionRole.Arn
+      Role: !GetAtt APIExecutionRole.Arn
   
   BridgeAPIResource:
     Type: 'AWS::ApiGateway::Resource'
