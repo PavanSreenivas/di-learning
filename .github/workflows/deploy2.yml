@@ -3,7 +3,6 @@ name: SWAPI-Stack-Bridge Deploy
 on:
   push:
     branches:
-      - main 
       - src/bridge
       - aws/bridge
       

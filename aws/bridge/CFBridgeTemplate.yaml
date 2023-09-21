@@ -47,7 +47,7 @@ Resources:
         Credentials: !GetAtt APIExecutionRole.Arn 
         PassthroughBehavior: NEVER
         RequestParameters:
-          integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
+          integration.request.header.Content-Type: "'application/json'"
      
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
