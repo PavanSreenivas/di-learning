@@ -34,8 +34,7 @@ Resources:
     Type: 'AWS::ApiGateway::Method'
     Properties:
       ApiKeyRequired: False
-      AuthorizationType: CUSTOM
-      AuthorizerId: !Ref APItoSQSAuthorizer
+      AuthorizationType: NONE
       HttpMethod: POST
       ResourceId: !GetAtt BridgeAPIResource.ResourceId
       RestApiId: !Ref BridgeAPI
