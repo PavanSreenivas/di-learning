@@ -32,7 +32,7 @@ jobs:
               src/bridge
 
         - name: Zip Archive
-          run: zip -r -j lambda_bridge.zip src/lambda_bridge.py
+          run: zip -r -j lambda_bridge.zip src/bridge/lambda_bridge.py
 
         - name: Upload lambda_bridge to S3
           run: |
@@ -62,6 +62,6 @@ jobs:
           uses: aws-actions/aws-cloudformation-github-deploy@v1
           with:
             name: SWAPI-Stack-Bridge
-            template: aws/CFBridgeTemplate.yaml
+            template: aws/bridge/CFBridgeTemplate.yaml
             capabilities: CAPABILITY_NAMED_IAM
           
