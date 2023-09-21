@@ -188,6 +188,14 @@ Resources:
               Resource:
                 - !GetAtt StackFunction.Arn
 
+  StackFunctionSQSPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt StackFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt APIGatewayToSQSEventRule.Arn  
+
   BridgeDLQAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
