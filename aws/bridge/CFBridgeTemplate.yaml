@@ -154,24 +154,6 @@ Resources:
               Resource: 
                 - !GetAtt StackFunction.Arn
 
-  StackFunctionSQSPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      FunctionName: !GetAtt StackFunction.Arn
-      Action: lambda:InvokeFunction
-      Principal: events.amazonaws.com
-      SourceArn: !GetAtt APIGatewayToSQSEventRule.Arn  
-  
-  LambdaToSQSTrigger:
-    Type: 'AWS::Lambda::EventSourceMapping'
-    DependsOn: 
-      - StackFunctionSQSPermission
-    Properties:
-      BatchSize: 10
-      EventSourceArn: !GetAtt BridgeQueue.Arn
-      FunctionName: !Ref StackFunction
-
-
   APIExecutionRole:
     Type: AWS::IAM::Role
     Properties:
