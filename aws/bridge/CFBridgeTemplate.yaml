@@ -34,11 +34,12 @@ Resources:
     Type: 'AWS::ApiGateway::Method'
     Properties:
       ApiKeyRequired: False
-      AuthorizationType: AWS_IAM
-      AuthorizerId: !Ref APIExecutionRole
+      AuthorizationType: CUSTOM
+      AuthorizerId: null
       HttpMethod: POST
       ResourceId: !GetAtt BridgeAPIResource.ResourceId
       RestApiId: !Ref BridgeAPI
+      Credentials: !GetAtt APIExecutionRole.Arn
       Integration:
         Type: AWS
         IntegrationHttpMethod: POST
