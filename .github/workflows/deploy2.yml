@@ -29,7 +29,7 @@ jobs:
           uses: actions/checkout@v4
           with:
             sparse-checkout: |
-              src/lambda_bridge.py
+              src
 
         - name: Zip Archive
           run: zip -r -j lambda_bridge.zip src/lambda_bridge.py
