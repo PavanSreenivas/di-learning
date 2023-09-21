@@ -29,7 +29,7 @@ jobs:
           uses: actions/checkout@v4
           with:
             sparse-checkout: |
-              src
+              src/bridge
 
         - name: Zip Archive
           run: zip -r -j lambda_bridge.zip src/lambda_bridge.py
@@ -45,7 +45,7 @@ jobs:
             id-token: write
             contents: read
       env:
-        working-directory : ./aws
+        working-directory : ./aws/bridge
             
       steps:
         - name: Checkout Repository
@@ -61,8 +61,6 @@ jobs:
         - name: Deploy to AWS CloudFormation Bridge
           uses: aws-actions/aws-cloudformation-github-deploy@v1
           with:
-            sparse-checkout: |
-              src/CFBridgeTemplate.yaml
             name: SWAPI-Stack-Bridge
             template: aws/CFBridgeTemplate.yaml
             capabilities: CAPABILITY_NAMED_IAM
