@@ -1,0 +1,188 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SWAPI Stack Bridge CloudFormation Template
+
+Resources:
+  BridgeQueue:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      QueueName: stackbridgequeue
+      DelaySeconds: 0
+      VisibilityTimeout: 60
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt BridgeDLQ.Arn
+        maxReceiveCount: 3
+
+  BridgeDLQ:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: BridgeDLQ
+      VisibilityTimeout: 60
+
+  BridgeAPI:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: BridgeAPI
+  
+  BridgeAPIResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      RestApiId: !Ref BridgeAPI
+      ParentId: !GetAtt BridgeAPI.RootResourceId
+      PathPart: films
+  
+  BridgeAPIMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      ApiKeyRequired: False
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId: !GetAtt BridgeAPIResource.ResourceId
+      RestApiId: !Ref BridgeAPI
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: !Sub 
+          - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations
+          - LambdaArn: !GetAtt StackFunction.Arn
+
+  BridgeAPIDeploy:
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref BridgeAPI
+   
+  BridgeAPIStage:
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      StageName: BridgeAPIStage
+      RestApiId: !Ref BridgeAPI
+      DeploymentId:  !Ref BridgeAPIDeploy 
+      MethodSettings:
+        - ResourcePath: "/*"
+          HttpMethod: "*"
+          LoggingLevel: INFO
+      AccessLogSetting:
+        DestinationArn: !GetAtt BridgeAPILogs.Arn
+        Format: $context.extendedRequestId $context.identity.sourceIp $context.identity.caller $context.identity.user [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId
+  
+  BridgeAPILogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join
+        - '-'
+        - - !Ref BridgeAPI
+          - access-logs
+  
+  LambdaToSQSPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt StackFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt APIGatewayToSQSEventRule.Arn  
+
+  StackFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: StackFunction
+      Runtime: python3.9
+      Timeout: 60
+      Handler: lambda_bridge.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: travel1s3bucket
+        S3Key: lambda_bridge.zip
+      DeadLetterConfig:
+        TargetArn: !GetAtt BridgeDLQ.Arn
+
+  APIGatewayToSQSEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Trigger StackFunction with sqs message on POST
+      EventPattern:
+        source:
+          - aws.apigateway
+        detail:
+          eventName:
+            - 'Invoke'
+          requestContext:
+            httpMethod:
+              - POST
+      Targets:
+        - Arn: !GetAtt BridgeQueue.Arn
+          Id: BridgeQueueTarget
+
+  LambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: bridgecloudstack
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: swapi-bridge-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:DescribeLogGroups
+                - logs:DescribeLogStreams
+                - logs:PutLogEvents
+                - logs:GetLogEvents
+                - logs:FilterLogEvents
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - sqs:* 
+              Resource: !GetAtt BridgeQueue.Arn
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource: 
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/StackFunction"
+
+  BridgeDLQAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: DLQAlarm
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 1
+      MetricName: ApproximateNumberOfMessagesVisible
+      Namespace: AWS/SQS
+      Period: 60
+      Statistic: Sum
+      Threshold: 0
+      AlarmDescription: Alarm when message in DLQ
+      AlarmActions:
+        - !Ref BridgeSNSTopic
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt BridgeDLQ.QueueName
+
+  BridgeSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: BridgeSNSTopic
+
+
+Outputs:
+  StackFunction:
+    Description: Stack Function Code Name
+    Value: !Ref StackFunction
+  
+  BridgeQueue:
+    Description: Bridge SQS Queue
+    Value: !GetAtt BridgeQueue.QueueUrl
+
+  BridgeSNSTopic:
+    Description: Bridge SNS Topic
+    Value: !Ref BridgeSNSTopic
+  BridgeAPI:
+    Description: API Gateway Endpoint
+    Value: !Sub "https://${BridgeAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
