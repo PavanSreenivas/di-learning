@@ -29,12 +29,25 @@ Resources:
       RestApiId: !Ref BridgeAPI
       ParentId: !GetAtt BridgeAPI.RootResourceId
       PathPart: films
-  
+
+  APItoSQSAuthorizer:
+    Type: 'AWS::ApiGateway::Authorizer'
+    Properties:
+      Name: APItoSQSAuthorizer
+      RestApiId: !Ref BridgeAPI
+      Type: TOKEN  
+      AuthorizerUri: arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${BridgeQueue.QueueName}
+      AuthorizerCredentials: !GetAtt APIExecutionRole.Arn
+      AuthorizerResultTtlInSeconds: 300  
+      IdentityValidationExpression: ^Bearer.*
+      IdentitySource: method.request.header.Authorization
+
   BridgeAPIMethod:
     Type: 'AWS::ApiGateway::Method'
     Properties:
       ApiKeyRequired: False
-      AuthorizationType: NONE
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref APItoSQSAuthorizer
       HttpMethod: POST
       ResourceId: !GetAtt BridgeAPIResource.ResourceId
       RestApiId: !Ref BridgeAPI
@@ -45,14 +58,13 @@ Resources:
           - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}
           - QueueName: !GetAtt BridgeQueue.QueueName
         PassthroughBehavior: WHEN_NO_MATCH
-        Credentials: !GetAtt APIExecutionRole.Arn
         RequestParameters:
           integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
         RequestTemplates:
           application/json: '{"Action": "SendMessage", "MessageBody": $input.body}'
         IntegrationResponses:
           - StatusCode: 200
-     
+ 
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
@@ -210,7 +222,7 @@ Outputs:
   StackFunction:
     Description: Stack Lambda Function Code Name
     Value: !Ref StackFunction
-  
+
   BridgeQueue:
     Description: Bridge SQS Queue 
     Value: !GetAtt BridgeQueue.QueueUrl
