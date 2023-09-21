@@ -220,5 +220,5 @@ Outputs:
     Description: Bridge SNS Topic Notification
     Value: !Ref BridgeSNSTopic
   BridgeAPI:
-    Description: API Gateway Endpoint
+    Description: BridgeAPI Gateway Endpoint
     Value: !Sub "https://${BridgeAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/films"
