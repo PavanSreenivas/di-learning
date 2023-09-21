@@ -22,7 +22,10 @@ Resources:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: BridgeAPI
-      
+      EndpointConfiguration:
+        Types:
+          - REGIONAL 
+          
   BridgeAPIResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
