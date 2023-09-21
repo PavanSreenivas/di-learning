@@ -45,7 +45,7 @@ Resources:
           - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}
           - QueueName: !GetAtt BridgeQueue.QueueName
         Credentials: !GetAtt APIExecutionRole.Arn 
-        PassthroughBehavior: NEVER
+        PassthroughBehavior: WHEN_NO_MATCH
         RequestParameters:
           integration.request.header.Content-Type: "'application/json'"
         RequestTemplates:
@@ -77,7 +77,7 @@ Resources:
     Properties:
       LogGroupName: !Join
         - '-'
-        - - !Ref BridgeAPIStage
+        - - !Ref BridgeAPI
           - access-logs
   
   StackFunction:
