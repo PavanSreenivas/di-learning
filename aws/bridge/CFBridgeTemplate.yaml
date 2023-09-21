@@ -48,6 +48,8 @@ Resources:
         PassthroughBehavior: NEVER
         RequestParameters:
           integration.request.header.Content-Type: "'application/json'"
+        RequestTemplates:
+          application/json: '{"MessageBody": $input.json("$")}'
      
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
