@@ -5,7 +5,7 @@ Resources:
   BridgeQueue:
     Type: 'AWS::SQS::Queue'
     Properties:
-      QueueName: stackbridgequeue
+      QueueName: BridgeQueue
       DelaySeconds: 0
       VisibilityTimeout: 60
       RedrivePolicy:
@@ -178,7 +178,7 @@ Resources:
               Resource: "*"
             - Effect: Allow
               Action:
-                - sqs:* 
+                - sqs:SendMessage
               Resource: "*"
 
   BridgeDLQAlarm:

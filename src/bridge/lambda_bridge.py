@@ -8,7 +8,7 @@ import boto3
 def lambda_handler(event,context):
     
     sqs = boto3.client('sqs')
-    queue_url = 'https://sqs.us-east-1.amazonaws.com/876332050529/stackbridgequeue'
+    queue_url = 'https://sqs.us-east-1.amazonaws.com/876332050529/BridgeQueue'
     
     data = json.loads(event['body'])
     
