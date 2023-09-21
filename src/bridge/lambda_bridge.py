@@ -19,7 +19,7 @@ def lambda_handler(event,context):
     response_code = response["ResponseMetadata"]["HTTPStatusCode"]
     
     if response_code == 200:
-        message = "Message recieved from SQS"
+        message = "Message Recieved from SQS"
     else:
         message = "Error in Receiving Message from SQS"
     
