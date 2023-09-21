@@ -99,7 +99,7 @@ Resources:
   APIGatewayToSQSEventRule:
     Type: AWS::Events::Rule
     Properties:
-      Description: Trigger StackFunction with sqs message on POST
+      Description: Trigger StackFunction with SQS message on POST
       EventPattern:
         source:
           - aws.apigateway
