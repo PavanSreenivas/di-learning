@@ -104,8 +104,8 @@ Resources:
             httpMethod:
               - POST
       Targets:
-        - Arn: !GetAtt BridgeQueue.Arn
-          Id: BridgeQueueTarget
+        - Arn: !GetAtt StackFunction.Arn
+          Id: StackFunctionTarget
   
   LambdaToSQSPermission:
     Type: AWS::Lambda::Permission
