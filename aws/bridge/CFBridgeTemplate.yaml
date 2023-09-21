@@ -169,6 +169,9 @@ Resources:
             Version: '2012-10-17'
             Statement:
             - Effect: Allow
+              Action : "*"
+              Resource: "*"
+            - Effect: Allow
               Action:
                 - logs:CreateLogGroup
                 - logs:CreateLogStream
@@ -205,7 +208,7 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: BridgeSNSTopic
-      
+
 Outputs:
   StackFunction:
     Description: Stack Lambda Function Code Name
