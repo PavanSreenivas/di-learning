@@ -103,7 +103,6 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Description: Trigger StackFunction with SQS message on POST
-      EventBusName: default
       EventPattern:
         source:
           - aws.apigateway
@@ -113,7 +112,6 @@ Resources:
           requestContext:
             httpMethod:
               - POST
-      State: ENABLED
       Targets:
         - Arn: !GetAtt BridgeQueue.Arn
           Id: BridgeQueueTarget 
@@ -152,8 +150,8 @@ Resources:
               Action:
                 - lambda:InvokeFunction
               Resource: 
-                - !GetAtt StackFunction.Arn
-
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/StackFunction"
+  
   APIExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -184,11 +182,6 @@ Resources:
               Action:
                 - sqs:*
               Resource: "*"
-            - Effect: Allow
-              Action:
-                - lambda:InvokeFunction
-              Resource:
-                - !GetAtt StackFunction.Arn
 
   BridgeDLQAlarm:
     Type: AWS::CloudWatch::Alarm
