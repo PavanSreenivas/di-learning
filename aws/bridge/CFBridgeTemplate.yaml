@@ -150,8 +150,8 @@ Resources:
               Action:
                 - lambda:InvokeFunction
               Resource: 
-                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function/StackFunction"
-  
+                - !GetAtt StackFunction.Arn
+
   APIExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -182,6 +182,11 @@ Resources:
               Action:
                 - sqs:*
               Resource: "*"
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - !GetAtt StackFunction.Arn
 
   BridgeDLQAlarm:
     Type: AWS::CloudWatch::Alarm
