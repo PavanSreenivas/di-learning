@@ -216,7 +216,7 @@ Outputs:
     Value: !Ref StackFunction
   
   BridgeQueue:
-    Description: Bridge SQS Queue
+    Description: Bridge SQS Queue 
     Value: !GetAtt BridgeQueue.QueueUrl
 
   BridgeSNSTopic:
