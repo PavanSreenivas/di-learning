@@ -44,9 +44,11 @@ Resources:
         Uri: !Sub 
           - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations
           - LambdaArn: !GetAtt StackFunction.Arn
-
+  
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
+    DependsOn:
+      - BridgeAPIMethod
     Properties:
       RestApiId: !Ref BridgeAPI
    
