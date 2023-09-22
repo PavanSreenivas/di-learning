@@ -46,7 +46,7 @@ Resources:
         IntegrationHttpMethod: POST
         Credentials: !GetAtt APIExecutionRole.Arn
         Uri: !Sub 
-          - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/
+          - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}
           - QueueName: !GetAtt BridgeQueue.QueueName
         PassthroughBehavior: WHEN_NO_MATCH
         RequestParameters:
