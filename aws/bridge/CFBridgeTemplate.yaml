@@ -216,13 +216,6 @@ Resources:
     Properties:
       DisplayName: BridgeSNSTopic
 
-  LambdaToSQSTrigger:
-    Type: 'AWS::Lambda::EventSourceMapping'
-    Properties:
-      BatchSize: 10
-      EventSourceArn: !GetAtt BridgeQueue.Arn
-      FunctionName: !Ref StackFunction
-
 Outputs:
   StackFunction:
     Description: Stack Lambda Function Code Name
