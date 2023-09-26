@@ -52,8 +52,10 @@ Resources:
         RequestParameters:
           integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
         RequestTemplates:
-          application/json: '{"Action": "SendMessage", "MessageBody": $input.body}'
+          application/json: 'Action:SendMessage&MessageBody:$input.body'
         IntegrationResponses:
+          - StatusCode: 200
+        MethodResponses:
           - StatusCode: 200
  
   BridgeAPIDeploy:
@@ -208,6 +210,13 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: BridgeSNSTopic
+
+  LambdaToSQSTrigger:
+  Type: 'AWS::Lambda::EventSourceMapping'
+    Properties:
+      BatchSize: 10
+      EventSourceArn: !GetAtt BridgeQueue.Arn
+      FunctionName: !Ref StackFunction
 
 Outputs:
   StackFunction:
