@@ -11,12 +11,77 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt BridgeDLQ.Arn
         maxReceiveCount: 3
-
+  
   BridgeDLQ:
     Type: "AWS::SQS::Queue"
     Properties:
       QueueName: BridgeDLQ
       VisibilityTimeout: 60
+  
+  BridgeDLQAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: DLQAlarm
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 1
+      MetricName: ApproximateNumberOfMessagesVisible
+      Namespace: AWS/SQS
+      Period: 60
+      Statistic: Sum
+      Threshold: 0
+      AlarmDescription: Alarm when message in DLQ
+      AlarmActions:
+        - !Ref BridgeSNSTopic
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt BridgeDLQ.QueueName
+
+  BridgeSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: BridgeSNSTopic
+      TopicName: BridgeSNSTopic
+
+  BridgeSNSTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      TopicArn: !Ref BridgeSNSTopic
+      Endpoint: pavan.sreeni11@gmail.com
+
+  BridgeSNSTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Id: BridgeSNSTopicPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: sns:Publish
+            Resource: !Ref BridgeSNSTopic
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref BridgeSNSTopic
+      Topics:
+        - !Ref BridgeSNSTopic
+
+  SQSQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Id: SQSQueuePolicy
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: sqs:SendMessage
+            Resource: !GetAtt BridgeQueue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref BridgeSNSTopic
+      Queues:
+        - !Ref BridgeSNSTopic
 
   BridgeAPI:
     Type: 'AWS::ApiGateway::RestApi'
@@ -192,29 +257,6 @@ Resources:
               Action:
                 - sqs:*
               Resource: "*"
-
-  BridgeDLQAlarm:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: DLQAlarm
-      ComparisonOperator: GreaterThanThreshold
-      EvaluationPeriods: 1
-      MetricName: ApproximateNumberOfMessagesVisible
-      Namespace: AWS/SQS
-      Period: 60
-      Statistic: Sum
-      Threshold: 0
-      AlarmDescription: Alarm when message in DLQ
-      AlarmActions:
-        - !Ref BridgeSNSTopic
-      Dimensions:
-        - Name: QueueName
-          Value: !GetAtt BridgeDLQ.QueueName
-
-  BridgeSNSTopic:
-    Type: AWS::SNS::Topic
-    Properties:
-      DisplayName: BridgeSNSTopic
 
 Outputs:
   StackFunction:
