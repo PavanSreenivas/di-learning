@@ -212,7 +212,7 @@ Resources:
       DisplayName: BridgeSNSTopic
 
   LambdaToSQSTrigger:
-  Type: 'AWS::Lambda::EventSourceMapping'
+    Type: 'AWS::Lambda::EventSourceMapping'
     Properties:
       BatchSize: 10
       EventSourceArn: !GetAtt BridgeQueue.Arn
