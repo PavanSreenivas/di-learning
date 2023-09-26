@@ -10,11 +10,19 @@ def lambda_handler(event,context):
     sqs = boto3.client('sqs')
     queue_url = 'https://sqs.us-east-1.amazonaws.com/876332050529/BridgeQueue'
     
-    data = json.loads(event['body'])
-    
-    message = json.dumps(data)
+    message = json.loads(event["Records"][0]["body"])
     print("Recieved Data\n")
     print(message)
+    
+    response = sqs.receive_message(
+        QueueUrl=queue_url,
+        MaxNumberOfMessages=1,  
+        MessageAttributeNames=[
+            'All'
+        ],
+        VisibilityTimeout=0,  
+        WaitTimeSeconds=0  
+    )
     
     response_code = response["ResponseMetadata"]["HTTPStatusCode"]
     
@@ -23,8 +31,9 @@ def lambda_handler(event,context):
     else:
         message = "Error in Receiving Message from SQS"
     
+
     return {
         "body": json.dumps({
             "statusCode": response_code,
-            "message": message)
+            "message": message})
     }

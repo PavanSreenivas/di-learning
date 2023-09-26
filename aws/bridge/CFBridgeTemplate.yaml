@@ -80,7 +80,7 @@ Resources:
             Condition:
               ArnEquals:
                 aws:SourceArn: !Ref BridgeSNSTopic
-      Queues:
+      Topics:
         - !Ref BridgeSNSTopic
 
   BridgeAPI:
