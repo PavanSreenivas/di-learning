@@ -125,9 +125,7 @@ Resources:
           requestContext:
             httpMethod:
               - POST
-          resourcePath:
-            - /films
-        State: ENABLED
+        State: "ENABLED"
       Targets:
         - Arn: !GetAtt BridgeQueue.Arn
           Id: BridgeQueueTarget 
