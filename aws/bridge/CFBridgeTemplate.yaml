@@ -45,9 +45,7 @@ Resources:
         Type: AWS
         IntegrationHttpMethod: POST
         Credentials: !GetAtt APIExecutionRole.Arn
-        Uri: !Sub 
-          - arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}
-          - QueueName: !GetAtt BridgeQueue.QueueName
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${BridgeQueue.QueueName}'
         PassthroughBehavior: WHEN_NO_MATCH
         RequestParameters:
           integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
@@ -57,6 +55,9 @@ Resources:
           - StatusCode: 200
         MethodResponses:
           - StatusCode: 200
+            ResponseModels: 
+              'application/json' : 'Empty'
+          
  
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
