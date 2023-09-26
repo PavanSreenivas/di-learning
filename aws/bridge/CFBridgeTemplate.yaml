@@ -46,19 +46,20 @@ Resources:
         IntegrationHttpMethod: POST
         Credentials: !GetAtt APIExecutionRole.Arn
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${BridgeQueue.QueueName}'
-        PassthroughBehavior: WHEN_NO_MATCH
+        PassthroughBehavior: NEVER
         RequestParameters:
           integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
         RequestTemplates:
           application/json: 'Action:SendMessage&MessageBody:$input.body'
         IntegrationResponses:
           - StatusCode: 200
+            ResponseTemplates:
+              application/json: ''
         MethodResponses:
-          StatusCode: 200
-          ResponseModels: 
-            'application/json' : 'Empty'
-          
- 
+          - StatusCode: 200
+            ResponseModels:
+              'application/json': 'Empty'   
+              
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
@@ -104,6 +105,12 @@ Resources:
       Environment:
         Variables:
           QUEUE_URL: !GetAtt BridgeQueue.QueueUrl
+      Events:
+        ApiGatewwaySQSEvent:
+          Type: EventBridgeRule
+          Properties:
+            Pattern: 
+              SourceArn: !GetAtt APIGatewayToSQSEventRule.Arn
 
   APIGatewayToSQSEventRule:
     Type: AWS::Events::Rule
@@ -118,6 +125,9 @@ Resources:
           requestContext:
             httpMethod:
               - POST
+          resourcePath:
+            - /films
+        State: ENABLED
       Targets:
         - Arn: !GetAtt BridgeQueue.Arn
           Id: BridgeQueueTarget 
