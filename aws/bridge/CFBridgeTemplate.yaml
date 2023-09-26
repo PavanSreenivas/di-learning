@@ -80,8 +80,6 @@ Resources:
             Condition:
               ArnEquals:
                 aws:SourceArn: !Ref BridgeSNSTopic
-      Topics:
-        - !Ref BridgeSNSTopic
 
   BridgeAPI:
     Type: 'AWS::ApiGateway::RestApi'
