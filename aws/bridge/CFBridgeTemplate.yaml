@@ -125,7 +125,6 @@ Resources:
           requestContext:
             httpMethod:
               - POST
-        State: "ENABLED"
       Targets:
         - Arn: !GetAtt BridgeQueue.Arn
           Id: BridgeQueueTarget 
