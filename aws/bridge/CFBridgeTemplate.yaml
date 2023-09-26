@@ -55,10 +55,6 @@ Resources:
           - StatusCode: 200
             ResponseTemplates:
               application/json: ''
-        MethodResponses:
-          - StatusCode: 200
-            ResponseModels:
-              'application/json': 'Empty'   
               
   BridgeAPIDeploy:
     Type: 'AWS::ApiGateway::Deployment'
