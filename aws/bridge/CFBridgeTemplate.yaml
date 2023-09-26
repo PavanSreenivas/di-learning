@@ -105,12 +105,13 @@ Resources:
       Environment:
         Variables:
           QUEUE_URL: !GetAtt BridgeQueue.QueueUrl
-      Events:
-        ApiGatewwaySQSEvent:
-          Type: EventBridgeRule
-          Properties:
-            Pattern: 
-              SourceArn: !GetAtt APIGatewayToSQSEventRule.Arn
+
+  SQStoLambdaTrigger:
+    Type: 'AWS::Lambda::EventSourceMapping'
+    Properties:
+      BatchSize: 10
+      EventSourceArn: !GetAtt BridgeQueue.Arn
+      FunctionName: !Ref StackFunction
 
   APIGatewayToSQSEventRule:
     Type: AWS::Events::Rule
