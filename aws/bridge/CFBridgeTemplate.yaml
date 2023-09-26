@@ -54,9 +54,9 @@ Resources:
         IntegrationResponses:
           - StatusCode: 200
         MethodResponses:
-          - StatusCode: 200
-            ResponseModels: 
-              'application/json' : 'Empty'
+          StatusCode: 200
+          ResponseModels: 
+            'application/json' : 'Empty'
           
  
   BridgeAPIDeploy:
