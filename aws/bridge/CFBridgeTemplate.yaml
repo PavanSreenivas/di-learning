@@ -60,9 +60,6 @@ Resources:
             Principal: "*"
             Action: sns:Publish
             Resource: !Ref BridgeSNSTopic
-            Condition:
-              ArnEquals:
-                aws:SourceArn: !Ref BridgeSNSTopic
       Topics:
         - !Ref BridgeSNSTopic
 
